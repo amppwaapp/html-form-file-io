@@ -35,7 +35,10 @@ console.log('sw PUT or POST');
 		e.respondWith(async function() {
 console.log('sw in 30');			
 			const formdata = await e.request.formData();
-console.log('sw in 32, formdata=', formdata);	
+console.log('sw in 32, formdata=', formdata);
+			
+const formmode = await formdata.get('formmode');		
+			
 			if (! formdata) {
 				const response = new Response('FORMDATA ' + 'err', init);
 				console.log('sw in 34 response=', response);

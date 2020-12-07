@@ -85,6 +85,11 @@ console.log('sw temp1=', temp1);
 				return response;			
 			}
 			
+			const keys = await formdata.keys();
+			for (let i = 0; i < keys.length; i += 1) {
+				console.log('sw formdata key=', key);								
+			}
+			
 			const temp1 = await formdata.get('uploaded_file');
 			if (! temp1) {
 				const response = new Response('FORMDATA_FILE ' + 'err', init);

@@ -10,7 +10,7 @@ assets: []
 }
 });
 self.addEventListener('fetch', function(e) {
-	if (e.request.method == 'GET') {
+	if (e.request.method == 'GET') { // HEAD ?  OTHER?
 console.log('sw GET');	
 		e.respondWith(
 			caches.match(e.request).then(function(response) {
@@ -36,8 +36,6 @@ console.log('sw PUT or POST');
 console.log('sw in 30');			
 			const formdata = await e.request.formData();
 console.log('sw in 32, formdata=', formdata);
-			
-const formmode = await formdata.get('formmode');		
 			
 			if (! formdata) {
 				const response = new Response('FORMDATA ' + 'err', init);
@@ -75,19 +73,31 @@ console.log('sw formdata_values.length=', formdata_values.length);
 				const temp1 = formdata_values[0];
 console.log('sw temp1=', temp1);
 */
-				const temp1 = await formdata.get('uploaded_file');
-				if (! temp1) {
-					const response = new Response('FORMDATA_FILE ' + 'err', init);
-					console.log('sw in 38 response=', response);				
-					return response;			
-				}
 
-				const text = await temp1.text();					
-				if (! text) {
-					const response = new Response('TEXT ' + 'err', init);
-					console.log('sw in 54 response=', response);				
-					return response;							
-				} 
+			const hasformmode = await formdata.has('formmode');
+			if (!hasformmode) {
+				fetch(e.request); // DID GETTING FORMDATA RUIN REQUEST FOR THIS USE?  SHOULD I CLONE IT?			
+			}
+			const formmode = await formdata.get('formmode');					
+			if (! formmode || formmode.toLowerCase() !== 'local') {
+				const response = new Response('FORMDATA_FILE ' + 'err', init);
+				console.log('sw in 38 response=', response);				
+				return response;			
+			}
+			
+			const temp1 = await formdata.get('uploaded_file');
+			if (! temp1) {
+				const response = new Response('FORMDATA_FILE ' + 'err', init);
+				console.log('sw in 38 response=', response);				
+				return response;			
+			}
+
+			const text = await temp1.text();					
+			if (! text) {
+				const response = new Response('TEXT ' + 'err', init);
+				console.log('sw in 54 response=', response);				
+				return response;							
+			} 
 				
 //console.log('sw temp1a=', temp1a);
 			//temp1a.then(function(text){

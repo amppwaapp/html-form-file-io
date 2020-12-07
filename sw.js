@@ -9,7 +9,6 @@ url: 'offline.html',
 assets: []
 }
 });
-
 self.addEventListener('fetch', function(e) {
 	if (e.request.method == 'GET') {
 console.log('sw GET');	

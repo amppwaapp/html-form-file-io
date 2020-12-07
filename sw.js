@@ -33,13 +33,13 @@ console.log('sw 20 PUT or POST');
 			*/	
 								
 		e.respondWith(async function() {
-console.log('sw 30');			
+console.log('sw 22');			
 			const formdata = await e.request.formData();
-console.log('sw 32, formdata=', formdata);
+console.log('sw 24, formdata=', formdata);
 			
 			if (! formdata) {
 				const response = new Response('FORMDATA ' + 'err', init);
-				console.log('sw 34 no formdata, response=', response);
+				console.log('sw 26 no formdata, response=', response);
 				return response;			
 			} 
 			/*
@@ -75,34 +75,39 @@ console.log('sw temp1=', temp1);
 */
 
 			const hasformmode = await formdata.has('formmode');
+			console.log('sw 28 hasformmode=' + hasformmode);			
 			if (!hasformmode) {
-				console.log('sw 35 has no formmode so POST outside');				
+				console.log('sw 30 has no formmode so POST outside');				
 				return fetch(e.request); // DID GETTING FORMDATA RUIN REQUEST FOR THIS USE?  SHOULD I CLONE IT?			
 			}
 			const formmode = await formdata.get('formmode');
+			console.log('sw 32 formmode=' + formmode);			
 			if (! formmode || formmode.toLowerCase() !== 'local') {
-				console.log('sw 36 unknown formmode=' + formmode);				
+				console.log('sw 34 unknown formmode=' + formmode);				
 				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw in 38 response=', response);				
+				console.log('sw in 36 response=', response);				
 				return response;			
 			}
 			
 			const keys = await formdata.keys();
+			console.log('sw in 38 keys.length=' + keys.length);			
 			for (let i = 0; i < keys.length; i += 1) {
-				console.log('sw formdata key=', key);								
+				console.log('sw 40 key[' + i + ']=' + keys[i]);								
 			}
 			
 			const temp1 = await formdata.get('uploaded_file');
+			console.log('sw in 42 temp1=', temp1);						
 			if (! temp1) {
 				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw in 38 response=', response);				
+				console.log('sw in 44 response=', response);				
 				return response;			
 			}
 
-			const text = await temp1.text();					
+			const text = await temp1.text();
+			console.log('sw in 46 text=' + text);			
 			if (! text) {
 				const response = new Response('TEXT ' + 'err', init);
-				console.log('sw in 54 response=', response);				
+				console.log('sw 48 response=', response);				
 				return response;							
 			} 
 				

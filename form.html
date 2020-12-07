@@ -8,6 +8,8 @@ header("Access-Control-Expose-Headers: AMP-Access-Control-Allow-Source-Origin");
 https://amp.dev/documentation/components/amp-form/
 AMP-Redirect-To: https://example.com/forms/thank-you
 Access-Control-Expose-Headers: AMP-Redirect-To
+
+https://github.com/ampproject/amphtml/blob/master/spec/amp-cors-requests.md
 -->
 
 <!doctype html>
@@ -18,6 +20,7 @@ Access-Control-Expose-Headers: AMP-Redirect-To
     <meta name="description" content="This is the AMP Boilerplate.">
     <meta name="theme-color" content="#3367D6">
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta http-equiv="access-control-allow-methods" content="POST, GET, OPTIONS">
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" as="script" href="https://cdn.ampproject.org/v0.js">
     <script async src="https://cdn.ampproject.org/v0.js"></script>

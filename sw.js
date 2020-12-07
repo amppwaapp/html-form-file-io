@@ -13,18 +13,17 @@ self.addEventListener('fetch', function(e) {
 	if (e.request.method == 'GET') {
 console.log('sw GET');	
 		e.respondWith(
-			caches.match(e.request).then(function(response) { // .open('data-store')
+			caches.match(e.request).then(function(response) {
 console.log('sw cache match');					
-				return response || fetch(e.request);
+				return response || fetch(e.request); // FAILURE HERE CAN HAPPEN.
 			} )
 		);
-		return;	
-		//}());
+		return;
 	}
 	
 	if (e.request.method == 'PUT' || e.request.method == 'POST') {
 console.log('sw PUT or POST');	
-    	const init = {  };
+    		const init = {  };
 			init.status = '400';
 			init.statusText = 'Bad Request';
 			/* 

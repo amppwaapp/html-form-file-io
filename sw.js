@@ -85,15 +85,16 @@ console.log('sw temp1=', temp1);
 			if (! formmode || formmode.toLowerCase() !== 'local') {
 				console.log('sw 34 unknown formmode=' + formmode);				
 				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw in 36 response=', response);				
+				console.log('sw 35 response=', response);				
 				return response;			
 			}
 			
 			const keys = await formdata.keys();
-			console.log('sw in 38 keys=', keys);
+			console.log('sw 36 keys=', keys);
 			let key = keys.next();
 			while (!key.done) {
-			  console.log('sw in 39 key.value=', key.value);				
+			  console.log('sw 37 key.value=', key.value);
+			  console.log('sw 38 key.value[Symbol.toStringTag]=' + key.value[Symbol.toStringTag]);
 			  key = keys.next();
 			}			
 			for (let i = 0; i < keys.length; i += 1) {
@@ -101,10 +102,10 @@ console.log('sw temp1=', temp1);
 			}
 			
 			const temp1 = await formdata.get('uploaded_file');
-			console.log('sw in 42 temp1=', temp1);						
+			console.log('sw 42 temp1=', temp1);						
 			if (! temp1) {
 				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw in 44 response=', response);				
+				console.log('sw 44 response=', response);				
 				return response;			
 			}
 

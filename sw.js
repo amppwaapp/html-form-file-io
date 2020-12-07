@@ -22,7 +22,7 @@ console.log('sw cache match');
 	}
 	
 	if (e.request.method == 'PUT' || e.request.method == 'POST') {
-console.log('sw PUT or POST');	
+console.log('sw 20 PUT or POST');	
     		const init = {  };
 			init.status = '400';
 			init.statusText = 'Bad Request';
@@ -33,13 +33,13 @@ console.log('sw PUT or POST');
 			*/	
 								
 		e.respondWith(async function() {
-console.log('sw in 30');			
+console.log('sw 30');			
 			const formdata = await e.request.formData();
-console.log('sw in 32, formdata=', formdata);
+console.log('sw 32, formdata=', formdata);
 			
 			if (! formdata) {
 				const response = new Response('FORMDATA ' + 'err', init);
-				console.log('sw in 34 response=', response);
+				console.log('sw 34 no formdata, response=', response);
 				return response;			
 			} 
 			/*
@@ -76,10 +76,12 @@ console.log('sw temp1=', temp1);
 
 			const hasformmode = await formdata.has('formmode');
 			if (!hasformmode) {
-				fetch(e.request); // DID GETTING FORMDATA RUIN REQUEST FOR THIS USE?  SHOULD I CLONE IT?			
+				console.log('sw 35 has no formmode so POST outside');				
+				return fetch(e.request); // DID GETTING FORMDATA RUIN REQUEST FOR THIS USE?  SHOULD I CLONE IT?			
 			}
-			const formmode = await formdata.get('formmode');					
+			const formmode = await formdata.get('formmode');
 			if (! formmode || formmode.toLowerCase() !== 'local') {
+				console.log('sw 36 unknown formmode=' + formmode);				
 				const response = new Response('FORMDATA_FILE ' + 'err', init);
 				console.log('sw in 38 response=', response);				
 				return response;			

@@ -90,7 +90,7 @@ console.log('sw temp1=', temp1);
 			}
 			
 			const keys = await formdata.keys();
-			console.log('sw in 38 keys.length=' + keys.length);			
+			console.log('sw in 38 keys=', keys);			
 			for (let i = 0; i < keys.length; i += 1) {
 				console.log('sw 40 key[' + i + ']=' + keys[i]);								
 			}

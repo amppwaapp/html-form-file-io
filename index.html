@@ -10,6 +10,7 @@
     <script async src="https://cdn.ampproject.org/v0.js"></script>
     
     <script async custom-element="amp-fx-collection" src="https://cdn.ampproject.org/v0/amp-fx-collection-0.1.js"></script>
+    <script async custom-element="amp-install-serviceworker" src="https://cdn.ampproject.org/v0/amp-install-serviceworker-0.1.js"></script>
     <style amp-custom>
 
         body {
@@ -98,5 +99,9 @@
         width="70"
         src="images/amplogo.png"></amp-img></a>
     </div>
+    <amp-install-serviceworker src="/sw.js"
+           data-iframe-src="install-sw.html"
+           layout="nodisplay">
+    </amp-install-serviceworker>
   </body>
 </html>

@@ -10,6 +10,9 @@ assets: []
 }
 });
 self.addEventListener('fetch', function(e) {
+	console.log('sw e=', e);
+	console.log('sw e.request=', e.request);	
+	console.log('sw e.request.url=', e.request.url);
 	if (e.request.method == 'GET') { // HEAD ?  OTHER?
 console.log('sw GET');	
 		e.respondWith(
@@ -89,18 +92,64 @@ console.log('sw temp1=', temp1);
 				return response;			
 			}
 			
-			const keys = await formdata.keys();
-			console.log('sw 36 keys=', keys);
-			let key = keys.next();
-			while (!key.done) {
-			  console.log('sw 37 key.value=', key.value);
-			  console.log('sw 38 key.value[Symbol.toStringTag]=' + key.value[Symbol.toStringTag]);
-			  key = keys.next();
-			}			
-			for (let i = 0; i < keys.length; i += 1) {
-				console.log('sw 40 key[' + i + ']=' + keys[i]);								
+			const items = await formdata.keys();
+			console.log('sw 36 items=', items);
+			let item = items.next();
+			const files = { };
+			while (!item.done) {
+			  console.log('sw 37 item.value=', item.value);
+			  if (item.toString() == '[object File]') {
+			    files[item.name] = item.text();
+			  }
+			  item = items.next();				
 			}
+			const filenames = Object.getOwnPropertyNames(files);
+			let successes = 0;
+			let errors = 0;
+			for (let i = 0; i < filenames.length; i += 1) {
+				console filename = filenames[i];
+				console.log('sw 40 filename=' + filename);
+				if (! file) {
+					errors += 1;
+					continue;
+				}
+				const text = await temp1.text();
+				console.log('sw in 46 text=' + text);			
+				if (! text) {
+					const response = new Response('TEXT ' + 'err', init);
+					console.log('sw 48 response=', response);				
+					return response;							
+				} 
+
+				const init_for_cache_copy = {  };
+				init_for_cache_copy.status = '200';
+				init_for_cache_copy.statusText = 'OK';
+				init_for_cache_copy.headers = new Headers({
+					'Content-Type': 'text/plain', 
+					'Content-Length': text.length
+				});
+
+				const request2cache = new Request(e.request.url, {method: 'GET'});
+				const response2cache = new Response(text, init_for_cache_copy);				
+				caches.open('data-store').then(function(cache) {
+console.log('sw cache put');				
+					cache.put(request2cache, response2cache).then(function() {
+						console.log('sw cache put successful');
+					});
+				})				
 			
+				const init_for_successful_response = {  };
+				init_for_successful_response.status = '200';
+				init_for_successful_response.statusText = 'OK';
+				let response2return = new Response(null, init_for_successful_response);								
+				return response2return;					
+			}
+		}()); // closes e.respondWith(async function() {
+	}
+		
+}); // fetch event listener
+
+/*			
 			const temp1 = await formdata.get('uploaded_file');
 			console.log('sw 42 temp1=', temp1);						
 			if (! temp1) {
@@ -137,38 +186,5 @@ console.log('sw temp4=', temp4);
 
 //payload = text;
 //console.log('sw payload=', payload);					
-
-				const init_for_payload = {  };
-				init_for_payload.status = '200';
-				init_for_payload.statusText = 'OK';
-				init_for_payload.headers = new Headers({
-					'Content-Type': 'text/plain', 
-					'Content-Length': text.length
-				});
-				
-				let response2return;				
-				if (e.request.method == 'POST') {
-					response2return = new Response(text, init_for_payload);					
-				} else if (e.request.method == 'PUT') {
-					const init_for_no_payload = {  };
-					init_for_no_payload.status = '200';
-					init_for_no_payload.statusText = 'OK';
-					response2return = new Response(null, init_for_no_payload);					
-				}				
-//console.log('sw in 6a response=', response);
-
-				const request2cache = new Request(e.request.url, {method: 'GET'});
-				const response2cache = new Response(text, init_for_payload);				
-				caches.open('data-store').then(function(cache) {
-console.log('sw cache put');				
-					cache.put(request2cache, response2cache).then(function() {
-						console.log('sw cache put successful');
-					});
-				})				
-				
-				return response2return;					
-		}()); // closes e.respondWith(async function() {
-	}
-		
 	// } // SPECIAL PROCESSING else
-}); // fetch event listener
+*/

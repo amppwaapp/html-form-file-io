@@ -10,6 +10,10 @@ AMP_SW.init({
 	}
 });
 
+self.addEventListener('activate', function(e) {
+	clients.claim();
+} );
+
 self.addEventListener('fetch', function(e) {
 	console.log('sw 0010 e=', e);
 	console.log('sw 0012 e.request=', e.request);	

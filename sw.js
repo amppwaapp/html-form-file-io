@@ -62,10 +62,11 @@ self.addEventListener('fetch', function(e) {
 			let item = items.next();
 			const files = { };
 			while (!item.done) {
-				console.log('sw 37 item.value=', item.value);
-				console.log('sw 38 item.toString()=' + item.toString());				
-				if (item.toString() == '[object File]') {
-					files[item.name] = item.text();
+				const file_object = item.value;
+				console.log('sw 37 file_object=', file_object);
+				console.log('sw 38 file_object.toString()=' + file_object.toString());				
+				if (file_object.toString() == '[object File]') {
+					files[file_object.name] = file_object.text();
 				}
 				item = items.next();				
 			}

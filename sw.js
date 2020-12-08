@@ -97,7 +97,7 @@ self.addEventListener('fetch', function(e) {
 					cache.put(request2cache, response2cache).then(function() {
 						console.log('sw cache put successful');
 					});
-				})				
+				} )				
 			
 				successes += 1;
 			}
@@ -109,10 +109,10 @@ self.addEventListener('fetch', function(e) {
 			const response2return = new Response(null, init);								
 			return response2return;					
 
-		}()); // end e.respondWith(async function() {
+		} ); // end e.respondWith(async function() {
 	} // end POST
 		
-}); // end fetch event listener
+} ); // end fetch event listener
 
 /*			
 			const temp1 = await formdata.get('uploaded_file');

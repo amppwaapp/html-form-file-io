@@ -10,9 +10,11 @@ AMP_SW.init({
 	}
 });
 
+/*
 self.addEventListener('activate', function(e) {
 	clients.claim();
 } );
+*/
 
 self.addEventListener('fetch', function(e) {
 	console.log('sw 0010 e=', e);
@@ -21,6 +23,7 @@ self.addEventListener('fetch', function(e) {
 
 	if (e.request.method == 'GET') { // HEAD ?  OTHER?
 		console.log('sw 0016 GET');
+/*		
 		e.respondWith(async function() {
 			caches.open('data-store').then(function(cache) {
 				console.log('sw 0017 cache=', cache);	
@@ -31,7 +34,22 @@ self.addEventListener('fetch', function(e) {
 				} )
 			} )
 		);
-		} () ); // end e.respondWith(async function() {			
+		} () ); // end e.respondWith(async function() {						
+*/			
+		e.respondWith(caches.match(e.request).then(function(response) {
+		// caches.match() always resolves
+		// but in case of success response will have value
+			if (response !== undefined) {
+				console.log('sw 0017 returning response from cache');
+				return response;
+			} else {
+				console.log('sw 0018 returning after external fetching');				
+				return fetch(event.request).then(function (response) {
+					return response;
+				} );
+			}	  
+		} ) );
+		
 	} // end GET
 	
 	const url = e.request.url

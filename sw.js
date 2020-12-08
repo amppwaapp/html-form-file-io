@@ -11,14 +11,14 @@ AMP_SW.init({
 });
 
 self.addEventListener('fetch', function(e) {
-	console.log('sw e=', e);
-	console.log('sw e.request=', e.request);	
-	console.log('sw e.request.url=', e.request.url);
+	console.log('sw 0010 e=', e);
+	console.log('sw 0012 e.request=', e.request);	
+	console.log('sw 0014 e.request.url=', e.request.url);
 	if (e.request.method == 'GET') { // HEAD ?  OTHER?
-		console.log('sw GET');	
+		console.log('sw 0016 GET');	
 		e.respondWith(
 			caches.match(e.request).then(function(response) {
-				console.log('sw cache match');					
+				console.log('sw 0018 cache match');					
 				return response || fetch(e.request);
 			} )
 		); // end e.respondWith(
@@ -27,77 +27,77 @@ self.addEventListener('fetch', function(e) {
 	
 	const url = e.request.url
 	if (e.request.method == 'POST') {
-		console.log('sw 20 POST');	
+		console.log('sw 0020 POST');	
 		const init = {  };
 		init.status = '400';
 		init.statusText = 'Bad Request';
 								
 		e.respondWith(async function() {
-			console.log('sw 22');			
+			console.log('sw 0022');			
 			
 			const parts = url.split('/upload?');
 			if (parts.length !== 2) {
 				const response = new Response('FORMDATA ' + 'err', init);
-				console.log('sw 26 not my url, url=', url);
+				console.log('sw 0024 not my url, url=', url);
 				return response;						
 			}
 			const baseurl = parts[0] + '/';			
 			
 			const formdata = await e.request.formData();
-			console.log('sw 24, formdata=', formdata);
+			console.log('sw 0026, formdata=', formdata);
 			
 			if (! formdata) {
 				const response = new Response('FORMDATA ' + 'err', init);
-				console.log('sw 26 no formdata, response=', response);
+				console.log('sw 0028 no formdata, response=', response);
 				return response;			
 			}
 
 			const hasformmode = await formdata.has('formmode');
-			console.log('sw 28 hasformmode=' + hasformmode);			
+			console.log('sw 0030 hasformmode=' + hasformmode);			
 			if (!hasformmode) {
-				console.log('sw 30 has no formmode so POST outside');				
+				console.log('sw 0032 has no formmode so POST outside');				
 				return fetch(e.request); // NEED TO TEST HERE			
 			}
 			const formmode = await formdata.get('formmode');
-			console.log('sw 32 formmode=' + formmode);			
+			console.log('sw 0034 formmode=' + formmode);			
 			if (! formmode || formmode.toLowerCase() !== 'local') {
-				console.log('sw 34 unknown formmode=' + formmode);				
+				console.log('sw 0036 unknown formmode=' + formmode);				
 				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw 35 response=', response);				
+				console.log('sw 0038 response=', response);				
 				return response;			
 			}
 			
 			const items = await formdata.keys();
-			console.log('sw 36 items=', items);
+			console.log('sw 0040 items=', items);
 			let item = items.next();
 			const files = { };
 			while (!item.done) {
 				const key = item.value;
-				console.log('sw 37 key=' + key);
+				console.log('sw 0042 key=' + key);
 				const candidate = await formdata.get(key)
-				console.log('sw 38 candidate=', candidate);		
+				console.log('sw 0044 candidate=', candidate);		
 				const characterized = candidate.toString();
-				console.log('sw 39 characterized=' + characterized);				
+				console.log('sw 0046 characterized=' + characterized);				
 				if (characterized == '[object File]') {
-					console.log('sw 40 found a file');					
+					console.log('sw 0048 found a file');					
 					files[candidate.name] = candidate.text();
 				}
 				item = items.next();				
 			}
 			const filenames = Object.getOwnPropertyNames(files);
-			console.log('sw 41 filenames.length=' + filenames.length);			
+			console.log('sw 0050 filenames.length=' + filenames.length);			
 			let successes = 0;
 			let errors = 0;
 			for (let i = 0; i < filenames.length; i += 1) {
 				const filename = filenames[i]; // was sic "console"
-				console.log('sw 42 filename=' + filename);
+				console.log('sw 0052 filename=' + filename);
 				if (! filename) {
 					errors += 1;
 					continue;
 				}
 				const file_object = files[filename];
 				const text = await file_object.text();
-				console.log('sw in 46 text=' + text);
+				console.log('sw 0054 in 46 text=' + text);
 				// 0-length file is allowed 
 
 				const init_for_cache_copy = {  };
@@ -112,9 +112,9 @@ self.addEventListener('fetch', function(e) {
 				const request2cache = new Request(url, {method: 'GET'});
 				const response2cache = new Response(text, init_for_cache_copy);				
 				caches.open('data-store').then(function(cache) {
-					console.log('sw cache put');				
+					console.log('sw 0056 cache put');				
 					cache.put(request2cache, response2cache).then(function() {
-						console.log('sw cache put successful');
+						console.log('sw 0058 cache put successful');
 					});
 				} )				
 			
@@ -135,18 +135,18 @@ self.addEventListener('fetch', function(e) {
 
 /*			
 			const temp1 = await formdata.get('uploaded_file');
-			console.log('sw 42 temp1=', temp1);						
+			console.log('sw 0060 temp1=', temp1);						
 			if (! temp1) {
 				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw 44 response=', response);				
+				console.log('sw 0062 response=', response);				
 				return response;			
 			}
 
 			const text = await temp1.text();
-			console.log('sw in 46 text=' + text);			
+			console.log('sw 0064 text=' + text);			
 			if (! text) {
 				const response = new Response('TEXT ' + 'err', init);
-				console.log('sw 48 response=', response);				
+				console.log('sw 0066 response=', response);				
 				return response;							
 			} 
 				

@@ -10,6 +10,13 @@ AMP_SW.init({
 	}
 });
 
+self.addEventListener('install', event => {
+	self.skipWaiting();
+	event.waitUntil(
+    		// caching etc
+	);
+});
+
 self.addEventListener('activate', function(e) {
 	clients.claim();
 } );

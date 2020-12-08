@@ -21,16 +21,17 @@ self.addEventListener('fetch', function(e) {
 
 	if (e.request.method == 'GET') { // HEAD ?  OTHER?
 		console.log('sw 0016 GET');
-		e.respondWith(
+		e.respondWith(async function() {
 			caches.open('data-store').then(function(cache) {
-				console.log('sw 0056 cache=', cache);				
+				console.log('sw 0017 cache=', cache);	
+				console.log('sw 0018 TRY TO GET e.request=', e.request);				
 				cache.match(e.request).then(function(response) {
-					console.log('sw 0018 cache match, response=', response);					
+					console.log('sw 0019 cache match, response=', response);					
 					return response || fetch(e.request);
 				} )
 			} )
-		); // end e.respondWith(
-		//return; // SOMETHING MORE HERE?
+		);
+		} () ); // end e.respondWith(async function() {			
 	} // end GET
 	
 	const url = e.request.url
@@ -121,7 +122,7 @@ self.addEventListener('fetch', function(e) {
 				const request2cache = new Request(url, {method: 'GET'});
 				const response2cache = new Response(text, init_for_cache_copy);				
 				caches.open('data-store').then(function(cache) {
-					console.log('sw 0056 cache put');				
+					console.log('sw 0056 PUT TO PLAY cache put, request2cache=', request2cache);
 					cache.put(request2cache, response2cache).then(function() {
 						console.log('sw 0058 cache put successful');
 					});

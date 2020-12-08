@@ -62,21 +62,25 @@ self.addEventListener('fetch', function(e) {
 			let item = items.next();
 			const files = { };
 			while (!item.done) {
-				const file_object = item.value;
-				console.log('sw 37 file_object=', file_object);
-				console.log('sw 38 file_object.toString()=' + file_object.toString());				
-				if (file_object.toString() == '[object File]') {
-					files[file_object.name] = file_object.text();
+				const key = item.value;
+				console.log('sw 37 key=' + key);
+				const candidate = await formdata.get(key)
+				console.log('sw 38 candidate=', candidate);		
+				const characterized = candidate.toString();
+				console.log('sw 39 characterized=' + characterized);				
+				if (characterized == '[object File]') {
+					console.log('sw 40 found a file');					
+					files[candidate.name] = candidate.text();
 				}
 				item = items.next();				
 			}
 			const filenames = Object.getOwnPropertyNames(files);
-			console.log('sw 39 filenames.length=' + filenames.length);			
+			console.log('sw 41 filenames.length=' + filenames.length);			
 			let successes = 0;
 			let errors = 0;
 			for (let i = 0; i < filenames.length; i += 1) {
 				const filename = filenames[i]; // was sic "console"
-				console.log('sw 40 filename=' + filename);
+				console.log('sw 42 filename=' + filename);
 				if (! file) {
 					errors += 1;
 					continue;

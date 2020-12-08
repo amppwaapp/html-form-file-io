@@ -1,87 +1,52 @@
 importScripts('https://cdn.ampproject.org/sw/amp-sw.js');
 AMP_SW.init({
-assetCachingOptions: [{
-regexp: /\.(png|jpg)/,
-cachingStrategy: 'CACHE_FIRST'
-}],
-offlinePageOptions: {
-url: 'offline.html',
-assets: []
-}
+	assetCachingOptions: [{
+		regexp: /\.(png|jpg)/,
+		cachingStrategy: 'CACHE_FIRST'
+	}],
+	offlinePageOptions: {
+		url: 'offline.html',
+		assets: []
+	}
 });
+
 self.addEventListener('fetch', function(e) {
 	console.log('sw e=', e);
 	console.log('sw e.request=', e.request);	
 	console.log('sw e.request.url=', e.request.url);
 	if (e.request.method == 'GET') { // HEAD ?  OTHER?
-console.log('sw GET');	
+		console.log('sw GET');	
 		e.respondWith(
 			caches.match(e.request).then(function(response) {
-console.log('sw cache match');					
-				return response || fetch(e.request); // FAILURE HERE CAN HAPPEN.
+				console.log('sw cache match');					
+				return response || fetch(e.request);
 			} )
 		);
-		return;
+		return; // SOMETHING MORE HERE?
 	}
 	
-	if (e.request.method == 'PUT' || e.request.method == 'POST') {
-console.log('sw 20 PUT or POST');	
-    		const init = {  };
-			init.status = '400';
-			init.statusText = 'Bad Request';
-			/* 
-			init.headers = new Headers({
-			  'Content-Type': 'text/plain'
-			});
-			*/	
+	if (e.request.method == 'POST') {
+		console.log('sw 20 PUT or POST');	
+		const init = {  };
+		init.status = '400';
+		init.statusText = 'Bad Request';
 								
 		e.respondWith(async function() {
-console.log('sw 22');			
+			console.log('sw 22');			
 			const formdata = await e.request.formData();
-console.log('sw 24, formdata=', formdata);
+			console.log('sw 24, formdata=', formdata);
 			
 			if (! formdata) {
 				const response = new Response('FORMDATA ' + 'err', init);
 				console.log('sw 26 no formdata, response=', response);
 				return response;			
-			} 
-			/*
-			const formdata_keys = await formdata.keys();
-console.log('sw in 36, formdata_keys=', formdata_keys);			
-			if (! formdata_keys) {
-				const response = new Response('FORMDATA_KEYS ' + 'err', init);
-				console.log('sw in 38 response=', response);				
-				return response;			
 			}
-			for (var formdata_key of formdata_keys) {
-   				console.log('sw in 39 formdata_key=', formdata_key); 
-			}
-						
-			const formdata_values = await formdata.values();
-console.log('sw in 46, formdata_values=', formdata_values);			
-			if (! formdata_values) {
-				const response = new Response('FORMDATA_VALUES ' + 'err', init);
-				console.log('sw in 48 response=', response);				
-				return response;			
-			} 
-			
-			//(async function( ) {
-console.log('sw formdata_values.length=', formdata_values.length);						
-				if (formdata_values.length != 1) {
-					const response = new Response('MORE INPUT THAN EXPECTED ', init);
-					console.log('sw in 50 response=', response);
-					return response;				
-				}
-				console.log('sw in 52');				
-				const temp1 = formdata_values[0];
-console.log('sw temp1=', temp1);
-*/
 
 			const hasformmode = await formdata.has('formmode');
 			console.log('sw 28 hasformmode=' + hasformmode);			
 			if (!hasformmode) {
 				console.log('sw 30 has no formmode so POST outside');				
-				return fetch(e.request); // DID GETTING FORMDATA RUIN REQUEST FOR THIS USE?  SHOULD I CLONE IT?			
+				return fetch(e.request); // NEED TO TEST HERE			
 			}
 			const formmode = await formdata.get('formmode');
 			console.log('sw 32 formmode=' + formmode);			
@@ -97,11 +62,11 @@ console.log('sw temp1=', temp1);
 			let item = items.next();
 			const files = { };
 			while (!item.done) {
-			  console.log('sw 37 item.value=', item.value);
-			  if (item.toString() == '[object File]') {
-			    files[item.name] = item.text();
-			  }
-			  item = items.next();				
+				console.log('sw 37 item.value=', item.value);
+				if (item.toString() == '[object File]') {
+					files[item.name] = item.text();
+				}
+				item = items.next();				
 			}
 			const filenames = Object.getOwnPropertyNames(files);
 			let successes = 0;
@@ -114,12 +79,8 @@ console.log('sw temp1=', temp1);
 					continue;
 				}
 				const text = await temp1.text();
-				console.log('sw in 46 text=' + text);			
-				if (! text) {
-					const response = new Response('TEXT ' + 'err', init);
-					console.log('sw 48 response=', response);				
-					return response;							
-				} 
+				console.log('sw in 46 text=' + text);
+				// 0-length file is allowed 
 
 				const init_for_cache_copy = {  };
 				init_for_cache_copy.status = '200';
@@ -132,22 +93,26 @@ console.log('sw temp1=', temp1);
 				const request2cache = new Request(e.request.url, {method: 'GET'});
 				const response2cache = new Response(text, init_for_cache_copy);				
 				caches.open('data-store').then(function(cache) {
-console.log('sw cache put');				
+					console.log('sw cache put');				
 					cache.put(request2cache, response2cache).then(function() {
 						console.log('sw cache put successful');
 					});
 				})				
 			
-				const init_for_successful_response = {  };
-				init_for_successful_response.status = '200';
-				init_for_successful_response.statusText = 'OK';
-				let response2return = new Response(null, init_for_successful_response);								
-				return response2return;					
+				successes += 1;
 			}
-		}()); // closes e.respondWith(async function() {
+
+			if (successes > 0) {
+				init.status = '200';
+				init.statusText = 'OK';
+			}
+			let response2return = new Response(null, init);								
+			return response2return;					
+
+		}()); // end e.respondWith(async function() {
 	}
 		
-}); // fetch event listener
+}); // end fetch event listener
 
 /*			
 			const temp1 = await formdata.get('uploaded_file');

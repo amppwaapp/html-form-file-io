@@ -63,12 +63,14 @@ self.addEventListener('fetch', function(e) {
 			const files = { };
 			while (!item.done) {
 				console.log('sw 37 item.value=', item.value);
+				console.log('sw 38 item.toString()=' + item.toString());				
 				if (item.toString() == '[object File]') {
 					files[item.name] = item.text();
 				}
 				item = items.next();				
 			}
 			const filenames = Object.getOwnPropertyNames(files);
+			console.log('sw 39 filenames.length=' + filenames.length);			
 			let successes = 0;
 			let errors = 0;
 			for (let i = 0; i < filenames.length; i += 1) {

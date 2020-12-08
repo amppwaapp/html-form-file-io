@@ -23,19 +23,21 @@ self.addEventListener('fetch', function(e) {
 
 	if (e.request.method == 'GET') { // HEAD ?  OTHER?
 		console.log('sw 0016 GET');
-/*		
-		e.respondWith(async function() {
+		console.log('sw 0016b caches=', caches);		
+				
+		//e.respondWith(async function() {		
 			caches.open('data-store').then(function(cache) {
 				console.log('sw 0017 cache=', cache);	
-				console.log('sw 0018 TRY TO GET e.request=', e.request);				
+				//console.log('sw 0018 TRY TO GET e.request=', e.request);
+				/*
 				cache.match(e.request).then(function(response) {
 					console.log('sw 0019 cache match, response=', response);					
 					return response || fetch(e.request);
 				} )
-			} )
-		);
-		} () ); // end e.respondWith(async function() {						
-*/			
+				*/
+			} );
+		//); ?
+		//} () ); // end e.respondWith(async function() {									
 
 		e.respondWith(caches.match(e.request, {ignoreSearch: true, ignoreMethod: true, ignoreVary: true}).then(function(response) {
 			if (response !== undefined) {

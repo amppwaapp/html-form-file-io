@@ -72,7 +72,7 @@ self.addEventListener('fetch', function(e) {
 			let successes = 0;
 			let errors = 0;
 			for (let i = 0; i < filenames.length; i += 1) {
-				const filename = filenames[i];
+				const filename = filenames[i]; // was sic "console"
 				console.log('sw 40 filename=' + filename);
 				if (! file) {
 					errors += 1;

@@ -96,7 +96,8 @@ self.addEventListener('fetch', function(e) {
 					errors += 1;
 					continue;
 				}
-				const text = await temp1.text();
+				const file_object = files[filename];
+				const text = await file_object.text();
 				console.log('sw in 46 text=' + text);
 				// 0-length file is allowed 
 

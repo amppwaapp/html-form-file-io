@@ -80,7 +80,7 @@ self.addEventListener('fetch', function(e) {
 				console.log('sw 0046 characterized=' + characterized);				
 				if (characterized == '[object File]') {
 					console.log('sw 0048 found a file');					
-					files[candidate.name] = candidate.text();
+					files[candidate.name] = candidate;
 				}
 				item = items.next();				
 			}
@@ -96,8 +96,9 @@ self.addEventListener('fetch', function(e) {
 					continue;
 				}
 				const file_object = files[filename];
+				console.log('sw 0053 file_object=', file_object);				
 				const text = await file_object.text();
-				console.log('sw 0054 in 46 text=' + text);
+				console.log('sw 0054 text=' + text);
 				// 0-length file is allowed 
 
 				const init_for_cache_copy = {  };

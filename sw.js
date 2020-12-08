@@ -26,7 +26,7 @@ self.addEventListener('fetch', function(e) {
 	} // end GET
 	
 	if (e.request.method == 'POST') {
-		console.log('sw 20 PUT or POST');	
+		console.log('sw 20 POST');	
 		const init = {  };
 		init.status = '400';
 		init.statusText = 'Bad Request';
@@ -109,7 +109,7 @@ self.addEventListener('fetch', function(e) {
 			const response2return = new Response(null, init);								
 			return response2return;					
 
-		} ); // end e.respondWith(async function() {
+		} () ); // end e.respondWith(async function() {
 	} // end POST
 		
 } ); // end fetch event listener

@@ -25,14 +25,25 @@ self.addEventListener('fetch', function(e) {
 		return; // SOMETHING MORE HERE?
 	} // end GET
 	
+	const url = e.request.url
 	if (e.request.method == 'POST') {
 		console.log('sw 20 POST');	
 		const init = {  };
 		init.status = '400';
 		init.statusText = 'Bad Request';
+		
 								
 		e.respondWith(async function() {
 			console.log('sw 22');			
+			
+			const parts = url.split('/upload?');
+			if (parts.length !== 2) {
+				const response = new Response('FORMDATA ' + 'err', init);
+				console.log('sw 26 not my url, url=', url);
+				return response;						
+			}
+			const baseurl = parts[0] + '/';			
+			
 			const formdata = await e.request.formData();
 			console.log('sw 24, formdata=', formdata);
 			
@@ -81,7 +92,7 @@ self.addEventListener('fetch', function(e) {
 			for (let i = 0; i < filenames.length; i += 1) {
 				const filename = filenames[i]; // was sic "console"
 				console.log('sw 42 filename=' + filename);
-				if (! file) {
+				if (! filename) {
 					errors += 1;
 					continue;
 				}
@@ -97,7 +108,8 @@ self.addEventListener('fetch', function(e) {
 					'Content-Length': text.length
 				});
 
-				const request2cache = new Request(e.request.url, {method: 'GET'});
+				const url = baseurl + filename;
+				const request2cache = new Request(url, {method: 'GET'});
 				const response2cache = new Response(text, init_for_cache_copy);				
 				caches.open('data-store').then(function(cache) {
 					console.log('sw cache put');				

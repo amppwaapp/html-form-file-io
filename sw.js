@@ -43,8 +43,8 @@ self.addEventListener('fetch', function(e) {
 				return response;
 			} else {
 				console.log('sw 0018 returning after external fetching');				
-				return fetch(e.request).then(function (response) {
-					return response;
+				return fetch(e.request).then(function (response) {// TELLTALE 
+					return response; 
 				} );
 			}	  
 		} ) );

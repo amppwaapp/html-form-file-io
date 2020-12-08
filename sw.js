@@ -37,8 +37,6 @@ self.addEventListener('fetch', function(e) {
 		} () ); // end e.respondWith(async function() {						
 */			
 		e.respondWith(caches.match(e.request).then(function(response) {
-		// caches.match() always resolves
-		// but in case of success response will have value
 			if (response !== undefined) {
 				console.log('sw 0017 returning response from cache');
 				return response;

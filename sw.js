@@ -21,9 +21,9 @@ self.addEventListener('fetch', function(e) {
 				console.log('sw cache match');					
 				return response || fetch(e.request);
 			} )
-		);
+		); // end e.respondWith(
 		return; // SOMETHING MORE HERE?
-	}
+	} // end GET
 	
 	if (e.request.method == 'POST') {
 		console.log('sw 20 PUT or POST');	
@@ -106,11 +106,11 @@ self.addEventListener('fetch', function(e) {
 				init.status = '200';
 				init.statusText = 'OK';
 			}
-			let response2return = new Response(null, init);								
+			const response2return = new Response(null, init);								
 			return response2return;					
 
 		}()); // end e.respondWith(async function() {
-	}
+	} // end POST
 		
 }); // end fetch event listener
 

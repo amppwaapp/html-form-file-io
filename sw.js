@@ -36,7 +36,8 @@ self.addEventListener('fetch', function(e) {
 		);
 		} () ); // end e.respondWith(async function() {						
 */			
-		e.respondWith(caches.match(e.request).then(function(response) {
+
+		e.respondWith(caches.match(e.request, {ignoreSearch: true, ignoreMethod: true, ignoreVary: true}).then(function(response) {
 			if (response !== undefined) {
 				console.log('sw 0017 returning response from cache');
 				return response;
@@ -135,6 +136,7 @@ self.addEventListener('fetch', function(e) {
 				});
 
 				const url = baseurl + filename;
+				console.log('sw 0055 cache with url=', url);				
 				const request2cache = new Request(url, {method: 'GET'});
 				const response2cache = new Response(text, init_for_cache_copy);				
 				caches.open('data-store').then(function(cache) {
@@ -147,7 +149,7 @@ self.addEventListener('fetch', function(e) {
 				successes += 1;
 			}
 
-			if (successes > 0) {
+			if (successes > 0 && errors == 0) {
 				init.status = '200';
 				init.statusText = 'OK';
 				init.headers = new Headers({

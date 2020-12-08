@@ -39,7 +39,7 @@ self.addEventListener('fetch', function(e) {
 		//); ?
 		//} () ); // end e.respondWith(async function() {									
 
-		e.respondWith(caches.match(e.request, {ignoreSearch: true, ignoreMethod: true, ignoreVary: true}).then(function(response) {
+		e.respondWith(caches.match(e.request.url).then(function(response) { // , {ignoreSearch: true, ignoreMethod: true, ignoreVary: true}
 			if (response !== undefined) {
 				console.log('sw 0017 returning response from cache');
 				return response;
@@ -139,11 +139,11 @@ self.addEventListener('fetch', function(e) {
 
 				const url = baseurl + filename;
 				console.log('sw 0055 cache with url=', url);				
-				const request2cache = new Request(url, {method: 'GET'});
+				//const request2cache = new Request(url, {method: 'GET'});
 				const response2cache = new Response(text, init_for_cache_copy);				
 				caches.open('data-store').then(function(cache) {
-					console.log('sw 0056 PUT TO PLAY cache put, request2cache=', request2cache);
-					cache.put(request2cache, response2cache).then(function() {
+					//console.log('sw 0056 PUT TO PLAY cache put, request2cache=', request2cache);
+					cache.put(url, response2cache).then(function() {
 						console.log('sw 0058 cache put successful');
 					});
 				} )				

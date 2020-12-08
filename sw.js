@@ -18,15 +18,19 @@ self.addEventListener('fetch', function(e) {
 	console.log('sw 0010 e=', e);
 	console.log('sw 0012 e.request=', e.request);	
 	console.log('sw 0014 e.request.url=', e.request.url);
+
 	if (e.request.method == 'GET') { // HEAD ?  OTHER?
-		console.log('sw 0016 GET');	
+		console.log('sw 0016 GET');
 		e.respondWith(
-			caches.match(e.request).then(function(response) {
-				console.log('sw 0018 cache match');					
-				return response || fetch(e.request);
+			caches.open('data-store').then(function(cache) {
+				console.log('sw 0056 cache=', cache);				
+				cache.match(e.request).then(function(response) {
+					console.log('sw 0018 cache match, response=', response);					
+					return response || fetch(e.request);
+				} )
 			} )
 		); // end e.respondWith(
-		return; // SOMETHING MORE HERE?
+		//return; // SOMETHING MORE HERE?
 	} // end GET
 	
 	const url = e.request.url

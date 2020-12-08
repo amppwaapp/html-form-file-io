@@ -125,8 +125,12 @@ self.addEventListener('fetch', function(e) {
 			if (successes > 0) {
 				init.status = '200';
 				init.statusText = 'OK';
+				init.headers = new Headers({
+					'Content-Type': 'application/json'
+				});
+				// , 'Content-Length': text.length
 			}
-			const response2return = new Response(null, init);								
+			const response2return = new Response('{ }', init);								
 			return response2return;					
 
 		} () ); // end e.respondWith(async function() {

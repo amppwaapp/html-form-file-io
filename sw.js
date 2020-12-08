@@ -31,7 +31,6 @@ self.addEventListener('fetch', function(e) {
 		const init = {  };
 		init.status = '400';
 		init.statusText = 'Bad Request';
-		
 								
 		e.respondWith(async function() {
 			console.log('sw 22');			

@@ -14,7 +14,7 @@ self.addEventListener('fetch', function(e) {
 	const namespace = 'datastore';
 	if (!pathname.startsWith('/html-form-file-io/' + namespace) ) {
 		console.log('sw ' + call_id + ' NOT FOR ME');		
-		return; // let AMP-SW's fetch event listener handle this instead
+		return; // let AMP-SW's fetch event listener handle this insteadu
 	}
 
 	e.respondWith(async function() {
@@ -26,7 +26,7 @@ self.addEventListener('fetch', function(e) {
 
 		if (e.request.method == 'HEAD' || e.request.method == 'GET') { // OTHER?
 			console.log('sw ' + call_id + ' HEAD/GET');
-			console.log('sw ' + call_id + ' ' + line_num++ + 'b caches=', caches);	
+			console.log('sw ' + call_id + ' caches=', caches);	
 			
 			const key = (function() {
 				const parts = pathname.split('/html-form-file-io/' + namespace + '/');
@@ -50,7 +50,7 @@ self.addEventListener('fetch', function(e) {
 				}
 				console.log('sw ' + call_id + ' cache=', cache);
 				const keys = cache.keys();
-				console.log('sw ' + call_id + ' ' + line_num++ + 'b keys=', keys);				
+				console.log('sw ' + call_id + ' keys=', keys);				
 				//console.log('sw ' + call_id + ' TRY TO GET e.request=', e.request);
 				const response = cache.match(key).then(function(response) {
 					if (response) {
@@ -87,7 +87,7 @@ self.addEventListener('fetch', function(e) {
 			*/
 			
 			const formdata = await e.request.formData();
-			console.log('sw ' + call_id + ' ' + line_num++ + ', formdata=', formdata);
+			console.log('sw ' + call_id + ' formdata=', formdata);
 
 			if (! formdata) {
 				const response = new Response(null, response_headers);

@@ -1,7 +1,7 @@
 //https://stackoverflow.com/questions/45257602/sharing-fetch-handler-logic-defined-across-multiple-service-workers
 
 self.addEventListener('fetch', function(e) {
-	const call_id = Math.random();
+	const call_id = Math.floor(Math.random() * 1000);
 	let line_num = 1;
 	console.log('sw ' + call_id + ' ' + line_num++ + ' e=', e);
 	console.log('sw ' + call_id + ' ' + line_num++ + ' e.request=', e.request);
@@ -10,10 +10,12 @@ self.addEventListener('fetch', function(e) {
 	const pathname = url.pathname;
 	const namespace = 'datastore';
 	if (!pathname.startsWith('/' + namespace) ) {
+		console.log('sw ' + call_id + ' ' + line_num++ + ' NOT FOR ME');		
 		return; // let AMP-SW's fetch event listener handle this instead
 	}
 
 	e.respondWith(async function() {
+		console.log('sw ' + call_id + ' ' + line_num++ + ' SW CLAIMING OWNERSHIP');		
 		
 		const response_headers = {  };
 			response_headers.status = '400';

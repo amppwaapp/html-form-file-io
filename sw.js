@@ -1,27 +1,4 @@
-importScripts('https://cdn.ampproject.org/sw/amp-sw.js');
-AMP_SW.init({
-	assetCachingOptions: [{
-		regexp: /\.(png|jpg)/,
-		cachingStrategy: 'CACHE_FIRST'
-	}],
-	offlinePageOptions: {
-		url: 'offline.html',
-		assets: []
-	}
-});
-
-self.addEventListener('install', event => {
-	self.skipWaiting();
-	/*
-	event.waitUntil(
-    		// caching etc
-	);
-	*/
-});
-
-self.addEventListener('activate', function(e) {
-	clients.claim();
-} );
+//https://stackoverflow.com/questions/45257602/sharing-fetch-handler-logic-defined-across-multiple-service-workers
 
 self.addEventListener('fetch', function(e) {
 	const call_id = Math.random();
@@ -216,3 +193,28 @@ console.log('sw temp4=', temp4);
 //console.log('sw payload=', payload);					
 	// } // SPECIAL PROCESSING else
 */
+
+importScripts('https://cdn.ampproject.org/sw/amp-sw.js');
+AMP_SW.init({
+	assetCachingOptions: [{
+		regexp: /\.(png|jpg)/,
+		cachingStrategy: 'CACHE_FIRST'
+	}],
+	offlinePageOptions: {
+		url: 'offline.html',
+		assets: []
+	}
+});
+
+self.addEventListener('install', event => {
+	self.skipWaiting();
+	/*
+	event.waitUntil(
+    		// caching etc
+	);
+	*/
+});
+
+self.addEventListener('activate', function(e) {
+	clients.claim();
+} );

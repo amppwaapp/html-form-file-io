@@ -30,7 +30,7 @@ self.addEventListener('fetch', function(e) {
 					return response;
 				}
 				console.log('sw ' + call_id + ' ' + line_num++ + ' cache=', cache);
-				const keys = await cache.keys();
+				const keys = cache.keys();
 				console.log('sw ' + call_id + ' ' + line_num++ + 'b keys=', keys);				
 				//console.log('sw ' + call_id + ' ' + line_num++ + ' TRY TO GET e.request=', e.request);
 				const response = cache.match(e.request).then(function(response) {

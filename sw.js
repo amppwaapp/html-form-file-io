@@ -53,13 +53,17 @@ self.addEventListener('fetch', function(e) {
 				console.log('sw ' + call_id + ' ' + line_num++ + 'b keys=', keys);				
 				//console.log('sw ' + call_id + ' TRY TO GET e.request=', e.request);
 				const response = cache.match(key).then(function(response) {
-					if (!response) {
+					if (response) {
+						console.log('sw ' + call_id + ' cache match found, response=', response);						
+						if (e.request.method == 'GET') {
+							console.log('sw ' + call_id + ' GET');
+						} else if (e.request.method == 'HEAD') {
+							response = new Response(null, response_headers);				
+							console.log('sw ' + call_id + ' HEAD response=', response);						
+						}
+					} else {
 						response = new Response(null, response_headers);
-						console.log('sw ' + call_id + ' response=', response);						
-					}
-					console.log('sw ' + call_id + ' cache match, response=', response);
-					if (e.request.method == 'HEAD') {						
-						response = new Response(null, response_headers);				
+						console.log('sw ' + call_id + ' no match, response=', response);					
 					}
 					return response;					
 				} );

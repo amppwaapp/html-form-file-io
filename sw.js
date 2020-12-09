@@ -11,19 +11,20 @@ self.addEventListener('fetch', function(e) {
 	if (!pathname.startsWith('/' + namespace) ) {
 		return; // let AMP-SW's fetch event listener handle this instead
 	}
-	const response_headers = {  };
-		response_headers.status = '400';
-		response_headers.statusText = 'Bad Request';
 
-	if (e.request.method == 'GET') { // HEAD ?  OTHER?
-		console.log('sw ' + call_id + ' 0016 GET');
-		console.log('sw ' + call_id + ' 0016b caches=', caches);		
-				
-		e.respondWith(async function() {
-			let response;			
-			caches.open(namespace).then(function(cache) {				
+	e.respondWith(async function() {
+		
+		const response_headers = {  };
+			response_headers.status = '400';
+			response_headers.statusText = 'Bad Request';
+
+		if (e.request.method == 'GET') { // HEAD ?  OTHER?
+			console.log('sw ' + call_id + ' 0016 GET');
+			console.log('sw ' + call_id + ' 0016b caches=', caches);						
+
+			const response = caches.open(namespace).then(function(cache) {				
 				if (!cache) {
-					response = new Response(null, response_headers); 
+					const response = new Response(null, response_headers); 
 					console.log('sw ' + call_id + ' 0062 response=', response);				
 					return response;
 				}
@@ -31,146 +32,113 @@ self.addEventListener('fetch', function(e) {
 				const keys = await cache.keys();
 				console.log('sw ' + call_id + ' 0017b keys=', keys);				
 				//console.log('sw ' + call_id + ' 0018 TRY TO GET e.request=', e.request);
-				cache.match(e.request).then(function(response) {
+				const response = cache.match(e.request).then(function(response) {
 					if (!response) {
 						response = new Response(null, response_headers);
 						console.log('sw ' + call_id + ' 0062 response=', response);						
 					}
 					console.log('sw ' + call_id + ' 0019 cache match, response=', response);					
 					return response;
-				} )
-			} );
-		//); ?
-		} () ); // end e.respondWith(async function() {									
-/*
-		e.respondWith(
-		caches.match(e.request.url).then(async function(response) { // , {ignoreSearch: true, ignoreMethod: true, ignoreVary: true}
-			if (response !== undefined) {
-				console.log('sw ' + call_id + ' 0017 returning response from cache');
-				return response;
-			} else {
-				console.log('sw ' + call_id + ' 0018 returning after external fetching');				
-				return fetch(e.request).then(function (response) {// TELLTALE 
-					return response; 
 				} );
-			}	  
-		} ) 
-		);
-*/		
-	} // end GET
+				return response;
+			} );
+			return response;
+		} // ^ GET
 	
-	if (e.request.method == 'POST') {
-		console.log('sw ' + call_id + ' 0020 POST');	
-		const init = {  };
-		init.status = '400';
-		init.statusText = 'Bad Request';
-								
-		e.respondWith(async function() {
-			console.log('sw ' + call_id + ' 0022');			
-			
-			const parts = url.split('/upload?');
-			if (parts.length !== 2) {
-				const response = new Response('FORMDATA ' + 'err', init);
-				console.log('sw ' + call_id + ' 0024 not my url, url=', url);
-				return response;						
-			}
-			const baseurl = parts[0] + '/';			
-			
-			const formdata = await e.request.formData();
-			console.log('sw ' + call_id + ' 0026, formdata=', formdata);
-			
-			if (! formdata) {
-				const response = new Response('FORMDATA ' + 'err', init);
-				console.log('sw ' + call_id + ' 0028 no formdata, response=', response);
-				return response;			
-			}
+		if (e.request.method == 'POST') {
+			console.log('sw ' + call_id + ' 0020 POST');
 
-			const hasformmode = await formdata.has('formmode');
-			console.log('sw ' + call_id + ' 0030 hasformmode=' + hasformmode);			
-			if (!hasformmode) {
-				console.log('sw ' + call_id + ' 0032 has no formmode so POST outside');				
-				return fetch(e.request); // NEED TO TEST HERE			
-			}
-			const formmode = await formdata.get('formmode');
-			console.log('sw ' + call_id + ' 0034 formmode=' + formmode);			
-			if (! formmode || formmode.toLowerCase() !== 'local') {
-				console.log('sw ' + call_id + ' 0036 unknown formmode=' + formmode);				
-				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw ' + call_id + ' 0038 response=', response);				
-				return response;			
-			}
-			
-			const items = await formdata.keys();
-			console.log('sw ' + call_id + ' 0040 items=', items);
-			let item = items.next();
-			const files = { };
-			while (!item.done) {
-				const key = item.value;
-				console.log('sw ' + call_id + ' 0042 key=' + key);
-				const candidate = await formdata.get(key)
-				console.log('sw ' + call_id + ' 0044 candidate=', candidate);		
-				const characterized = candidate.toString();
-				console.log('sw ' + call_id + ' 0046 characterized=' + characterized);				
-				if (characterized == '[object File]') {
-					console.log('sw ' + call_id + ' 0048 found a file');					
-					files[candidate.name] = candidate;
+			e.respondWith(async function() {
+				console.log('sw ' + call_id + ' 0022');			
+
+				const parts = url.split('/upload?');
+				if (parts.length !== 2) {
+					const response = new Response(null, response_headers);
+					console.log('sw ' + call_id + ' 0024 not my url, url=', url);
+					return response;						
 				}
-				item = items.next();				
-			}
-			const filenames = Object.getOwnPropertyNames(files);
-			console.log('sw ' + call_id + ' 0050 filenames.length=' + filenames.length);			
-			let successes = 0;
-			let errors = 0;
-			for (let i = 0; i < filenames.length; i += 1) {
-				const filename = filenames[i]; // was sic "console"
-				console.log('sw ' + call_id + ' 0052 filename=' + filename);
-				if (! filename) {
-					errors += 1;
-					continue;
+				const baseurl = parts[0] + '/';			
+
+				const formdata = await e.request.formData();
+				console.log('sw ' + call_id + ' 0026, formdata=', formdata);
+
+				if (! formdata) {
+					const response = new Response(null, response_headers);
+					console.log('sw ' + call_id + ' 0028 no formdata, response=', response);
+					return response;			
 				}
-				const file_object = files[filename];
-				console.log('sw ' + call_id + ' 0053 file_object=', file_object);				
-				const text = await file_object.text();
-				console.log('sw ' + call_id + ' 0054 text=' + text);
-				// 0-length file is allowed 
 
-				const init_for_cache_copy = {  };
-				init_for_cache_copy.status = '200';
-				init_for_cache_copy.statusText = 'OK';
-				init_for_cache_copy.headers = new Headers({
-					'Content-Type': 'text/plain', 
-					'Content-Length': text.length
-				});
+				const items = await formdata.keys();
+				console.log('sw ' + call_id + ' 0040 items=', items);
+				let item = items.next();
+				const files = { };
+				while (!item.done) {
+					const key = item.value;
+					console.log('sw ' + call_id + ' 0042 key=' + key);
+					const candidate = await formdata.get(key)
+					console.log('sw ' + call_id + ' 0044 candidate=', candidate);		
+					const characterized = candidate.toString();
+					console.log('sw ' + call_id + ' 0046 characterized=' + characterized);				
+					if (characterized == '[object File]') {
+						console.log('sw ' + call_id + ' 0048 found a file');					
+						files[candidate.name] = candidate;
+					}
+					item = items.next();				
+				}
+				const filenames = Object.getOwnPropertyNames(files);
+				console.log('sw ' + call_id + ' 0050 filenames.length=' + filenames.length);			
+				let successes = 0;
+				let errors = 0;
+				for (let i = 0; i < filenames.length; i += 1) {
+					const filename = filenames[i]; // was sic "console"
+					console.log('sw ' + call_id + ' 0052 filename=' + filename);
+					if (! filename) {
+						errors += 1;
+						continue;
+					}
+					const file_object = files[filename];
+					console.log('sw ' + call_id + ' 0053 file_object=', file_object);				
+					const text = await file_object.text();
+					console.log('sw ' + call_id + ' 0054 text=' + text);
+					// 0-length file is allowed 
 
-				const url = baseurl + filename;
-				console.log('sw ' + call_id + ' 0055 cache with url=', url);				
-				//const request2cache = new Request(url, {method: 'GET'});
-				const response2cache = new Response(text, init_for_cache_copy);				
-				caches.open('data-store').then(function(cache) {
-					//console.log('sw ' + call_id + ' 0056 PUT TO PLAY cache put, request2cache=', request2cache);
-					cache.put(url, response2cache).then(function() {
-						console.log('sw ' + call_id + ' 0058 cache put successful');
+					const init_for_cache_copy = {  };
+					init_for_cache_copy.status = '200';
+					init_for_cache_copy.statusText = 'OK';
+					init_for_cache_copy.headers = new Headers({
+						'Content-Type': 'text/plain', 
+						'Content-Length': text.length
 					});
-				} )				
-			
-				successes += 1;
-			}
 
-			if (successes > 0 && errors == 0) {
-				init.status = '200';
-				init.statusText = 'OK';
-				init.headers = new Headers({
-					'Content-Type': 'application/json'
-				});
-				// , 'Content-Length': text.length
-			}
-			const response2return = new Response('{ }', init);								
-			return response2return;					
+					const url = baseurl + filename;
+					console.log('sw ' + call_id + ' 0055 cache with url=', url);				
+					//const request2cache = new Request(url, {method: 'GET'});
+					const response2cache = new Response(text, init_for_cache_copy);				
+					caches.open('data-store').then(function(cache) {
+						//console.log('sw ' + call_id + ' 0056 PUT TO PLAY cache put, request2cache=', request2cache);
+						cache.put(url, response2cache).then(function() {
+							console.log('sw ' + call_id + ' 0058 cache put successful');
+						});
+					} )				
 
-		} () ); // end e.respondWith(async function() {
-	} // end POST
-		
-} ); // end fetch event listener
+					successes += 1;
+				}
+
+				if (successes > 0 && errors == 0) {
+					init.status = '200';
+					init.statusText = 'OK';
+					init.headers = new Headers({
+						'Content-Type': 'application/json'
+					});
+					// , 'Content-Length': text.length
+				}
+				const response2return = new Response({ }, response_headers);								
+				return response2return;					
+
+
+		} // ^ POST
+	} () ); // ^ e.respondWith(async function() {		
+} ); // ^ fetch event listener
 
 /*			
 			const temp1 = await formdata.get('uploaded_file');

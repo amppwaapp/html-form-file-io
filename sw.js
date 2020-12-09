@@ -3,30 +3,48 @@
 self.addEventListener('fetch', function(e) {
 	const call_id = Math.random();
 	console.log('sw ' + call_id + ' 0010 e=', e);
-	console.log('sw ' + call_id + ' 0012 e.request=', e.request);	
-	console.log('sw ' + call_id + ' 0014 e.request.url=', e.request.url);
+	console.log('sw ' + call_id + ' 0012 e.request=', e.request);
+	const url = new URL(e.request.url);
+	console.log('sw ' + call_id + ' 0014 url=e.request.url=', url);
+	const pathname = url.pathname;
+	const namespace = 'datastore';
+	if (!pathname.startsWith('/' + namespace) ) {
+		return; // let AMP-SW's fetch event listener handle this instead
+	}
+	const response_headers = {  };
+		response_headers.status = '400';
+		response_headers.statusText = 'Bad Request';
 
 	if (e.request.method == 'GET') { // HEAD ?  OTHER?
 		console.log('sw ' + call_id + ' 0016 GET');
 		console.log('sw ' + call_id + ' 0016b caches=', caches);		
 				
-		//e.respondWith(async function() {		
-			caches.open('data-store').then(function(cache) {
+		e.respondWith(async function() {
+			let response;			
+			caches.open(namespace).then(function(cache) {				
+				if (!cache) {
+					response = new Response(null, response_headers); 
+					console.log('sw ' + call_id + ' 0062 response=', response);				
+					return response;
+				}
 				console.log('sw ' + call_id + ' 0017 cache=', cache);
-				const keys = cache.keys();
+				const keys = await cache.keys();
 				console.log('sw ' + call_id + ' 0017b keys=', keys);				
 				//console.log('sw ' + call_id + ' 0018 TRY TO GET e.request=', e.request);
-				/*
 				cache.match(e.request).then(function(response) {
+					if (!response) {
+						response = new Response(null, response_headers);
+						console.log('sw ' + call_id + ' 0062 response=', response);						
+					}
 					console.log('sw ' + call_id + ' 0019 cache match, response=', response);					
-					return response || fetch(e.request);
+					return response;
 				} )
-				*/
 			} );
 		//); ?
-		//} () ); // end e.respondWith(async function() {									
-
-		e.respondWith(caches.match(e.request.url).then(function(response) { // , {ignoreSearch: true, ignoreMethod: true, ignoreVary: true}
+		} () ); // end e.respondWith(async function() {									
+/*
+		e.respondWith(
+		caches.match(e.request.url).then(async function(response) { // , {ignoreSearch: true, ignoreMethod: true, ignoreVary: true}
 			if (response !== undefined) {
 				console.log('sw ' + call_id + ' 0017 returning response from cache');
 				return response;
@@ -36,11 +54,11 @@ self.addEventListener('fetch', function(e) {
 					return response; 
 				} );
 			}	  
-		} ) );
-		
+		} ) 
+		);
+*/		
 	} // end GET
 	
-	const url = e.request.url
 	if (e.request.method == 'POST') {
 		console.log('sw ' + call_id + ' 0020 POST');	
 		const init = {  };

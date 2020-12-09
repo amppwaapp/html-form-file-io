@@ -8,6 +8,7 @@ self.addEventListener('fetch', function(e) {
 	const url = new URL(e.request.url);
 	console.log('sw ' + call_id + ' ' + line_num++ + ' url=e.request.url=', url);
 	const pathname = url.pathname;
+	console.log('sw ' + call_id + ' ' + line_num++ + ' pathname=' + pathname);	
 	const namespace = 'datastore';
 	if (!pathname.startsWith('/' + namespace) ) {
 		console.log('sw ' + call_id + ' ' + line_num++ + ' NOT FOR ME');		

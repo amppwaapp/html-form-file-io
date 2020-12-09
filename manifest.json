@@ -13,7 +13,8 @@
 "sizes": "512x512"
 }
 ],
-"start_url": "index.html",
+"scope": "/html-form-file-io/",
+"start_url": "/html-form-file-io/index.html",
 "background_color": "#222325",
 "display": "standalone",
 "theme_color": "#222325"

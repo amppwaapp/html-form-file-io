@@ -10,7 +10,7 @@ self.addEventListener('fetch', function(e) {
 	const pathname = url.pathname;
 	console.log('sw ' + call_id + ' ' + line_num++ + ' pathname=' + pathname);	
 	const namespace = 'datastore';
-	if (!pathname.startsWith('/' + namespace) ) {
+	if (!pathname.startsWith('/html-form-file-io/' + namespace) ) {
 		console.log('sw ' + call_id + ' ' + line_num++ + ' NOT FOR ME');		
 		return; // let AMP-SW's fetch event listener handle this instead
 	}
@@ -22,8 +22,8 @@ self.addEventListener('fetch', function(e) {
 			response_headers.status = '400';
 			response_headers.statusText = 'Bad Request';
 
-		if (e.request.method == 'GET') { // HEAD ?  OTHER?
-			console.log('sw ' + call_id + ' ' + line_num++ + ' GET');
+		if (e.request.method == 'HEAD' || e.request.method == 'GET') { // OTHER?
+			console.log('sw ' + call_id + ' ' + line_num++ + ' HEAD/GET');
 			console.log('sw ' + call_id + ' ' + line_num++ + 'b caches=', caches);						
 
 			const response = caches.open(namespace).then(function(cache) {				
@@ -41,8 +41,11 @@ self.addEventListener('fetch', function(e) {
 						response = new Response(null, response_headers);
 						console.log('sw ' + call_id + ' ' + line_num++ + ' response=', response);						
 					}
-					console.log('sw ' + call_id + ' ' + line_num++ + ' cache match, response=', response);					
-					return response;
+					console.log('sw ' + call_id + ' ' + line_num++ + ' cache match, response=', response);
+					if (e.request.method == 'HEAD') {						
+						response = new Response(null, response_headers);				
+					}
+					return response;					
 				} );
 				return response;
 			} );

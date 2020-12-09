@@ -24,7 +24,21 @@ self.addEventListener('fetch', function(e) {
 
 		if (e.request.method == 'HEAD' || e.request.method == 'GET') { // OTHER?
 			console.log('sw ' + call_id + ' ' + line_num++ + ' HEAD/GET');
-			console.log('sw ' + call_id + ' ' + line_num++ + 'b caches=', caches);						
+			console.log('sw ' + call_id + ' ' + line_num++ + 'b caches=', caches);	
+			
+			const key = (function() {
+				const parts = pathname.split('/html-form-file-io/' + namespace + '/');
+				if (parts.length === 2) {
+					return parts[1];
+				} else {
+					return '';					
+				}
+			}());
+			if (!key) {
+				const response = new Response(null, response_headers); 
+				console.log('sw ' + call_id + ' ' + line_num++ + ' response=', response);				
+				return response;
+			}
 
 			const response = caches.open(namespace).then(function(cache) {				
 				if (!cache) {
@@ -36,7 +50,7 @@ self.addEventListener('fetch', function(e) {
 				const keys = cache.keys();
 				console.log('sw ' + call_id + ' ' + line_num++ + 'b keys=', keys);				
 				//console.log('sw ' + call_id + ' ' + line_num++ + ' TRY TO GET e.request=', e.request);
-				const response = cache.match(e.request).then(function(response) {
+				const response = cache.match(key).then(function(response) {
 					if (!response) {
 						response = new Response(null, response_headers);
 						console.log('sw ' + call_id + ' ' + line_num++ + ' response=', response);						
@@ -55,6 +69,7 @@ self.addEventListener('fetch', function(e) {
 		if (e.request.method == 'POST') {
 			console.log('sw ' + call_id + ' ' + line_num++ + ' POST');
 			
+			/*
 			const parts = url.split('/upload?');
 			if (parts.length !== 2) {
 				const response = new Response(null, response_headers);
@@ -63,7 +78,8 @@ self.addEventListener('fetch', function(e) {
 			}
 			const baseurl = parts[0] + '/';
 			console.log('sw ' + call_id + ' ' + line_num++ + ' baseurl=' + baseurl);
-
+			*/
+			
 			const formdata = await e.request.formData();
 			console.log('sw ' + call_id + ' ' + line_num++ + ', formdata=', formdata);
 
@@ -115,13 +131,13 @@ self.addEventListener('fetch', function(e) {
 					'Content-Length': text.length
 				});
 
-				const url = baseurl + filename;
-				console.log('sw ' + call_id + ' ' + line_num++ + ' cache with url=', url);				
+				//const url = baseurl + filename;
+				//console.log('sw ' + call_id + ' ' + line_num++ + ' cache with url=', url);				
 				//const request2cache = new Request(url, {method: 'GET'});
 				const response2cache = new Response(text, init_for_cache_copy);				
 				caches.open(namespace).then(function(cache) {
 					//console.log('sw ' + call_id + ' ' + line_num++ + ' PUT TO PLAY cache put, request2cache=', request2cache);
-					cache.put(url, response2cache).then(function() {
+					cache.put(filename, response2cache).then(function() {
 						console.log('sw ' + call_id + ' ' + line_num++ + ' cache put successful');
 					});
 				} )				

@@ -58,7 +58,8 @@ self.addEventListener('fetch', function(e) {
 				console.log('sw ' + call_id + ' ' + line_num++ + ' not my url, url=', url);
 				return response;						
 			}
-			const baseurl = parts[0] + '/';			
+			const baseurl = parts[0] + '/';
+			console.log('sw ' + call_id + ' ' + line_num++ + ' baseurl=' + baseurl);
 
 			const formdata = await e.request.formData();
 			console.log('sw ' + call_id + ' ' + line_num++ + ', formdata=', formdata);

@@ -4,7 +4,7 @@ let call_id = 0
 
 self.addEventListener('fetch', function(e) {
 	//const call_id = Math.floor(Math.random() * 1000);
-	const call_id += 1;
+	call_id += 1;
 	console.log('sw ' + call_id + ' e=', e);
 	console.log('sw ' + call_id + ' e.request=', e.request);
 	const url = new URL(e.request.url);

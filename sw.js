@@ -2,10 +2,11 @@
 
 self.addEventListener('fetch', function(e) {
 	const call_id = Math.random();
-	console.log('sw ' + call_id + ' 0010 e=', e);
-	console.log('sw ' + call_id + ' 0012 e.request=', e.request);
+	let line_num = 1;
+	console.log('sw ' + call_id + ' ' + line_num++ + ' e=', e);
+	console.log('sw ' + call_id + ' ' + line_num++ + ' e.request=', e.request);
 	const url = new URL(e.request.url);
-	console.log('sw ' + call_id + ' 0014 url=e.request.url=', url);
+	console.log('sw ' + call_id + ' ' + line_num++ + ' url=e.request.url=', url);
 	const pathname = url.pathname;
 	const namespace = 'datastore';
 	if (!pathname.startsWith('/' + namespace) ) {
@@ -19,25 +20,25 @@ self.addEventListener('fetch', function(e) {
 			response_headers.statusText = 'Bad Request';
 
 		if (e.request.method == 'GET') { // HEAD ?  OTHER?
-			console.log('sw ' + call_id + ' 0016 GET');
-			console.log('sw ' + call_id + ' 0016b caches=', caches);						
+			console.log('sw ' + call_id + ' ' + line_num++ + ' GET');
+			console.log('sw ' + call_id + ' ' + line_num++ + 'b caches=', caches);						
 
 			const response = caches.open(namespace).then(function(cache) {				
 				if (!cache) {
 					const response = new Response(null, response_headers); 
-					console.log('sw ' + call_id + ' 0062 response=', response);				
+					console.log('sw ' + call_id + ' ' + line_num++ + ' response=', response);				
 					return response;
 				}
-				console.log('sw ' + call_id + ' 0017 cache=', cache);
+				console.log('sw ' + call_id + ' ' + line_num++ + ' cache=', cache);
 				const keys = await cache.keys();
-				console.log('sw ' + call_id + ' 0017b keys=', keys);				
-				//console.log('sw ' + call_id + ' 0018 TRY TO GET e.request=', e.request);
+				console.log('sw ' + call_id + ' ' + line_num++ + 'b keys=', keys);				
+				//console.log('sw ' + call_id + ' ' + line_num++ + ' TRY TO GET e.request=', e.request);
 				const response = cache.match(e.request).then(function(response) {
 					if (!response) {
 						response = new Response(null, response_headers);
-						console.log('sw ' + call_id + ' 0062 response=', response);						
+						console.log('sw ' + call_id + ' ' + line_num++ + ' response=', response);						
 					}
-					console.log('sw ' + call_id + ' 0019 cache match, response=', response);					
+					console.log('sw ' + call_id + ' ' + line_num++ + ' cache match, response=', response);					
 					return response;
 				} );
 				return response;
@@ -46,60 +47,60 @@ self.addEventListener('fetch', function(e) {
 		} // ^ GET
 	
 		if (e.request.method == 'POST') {
-			console.log('sw ' + call_id + ' 0020 POST');
+			console.log('sw ' + call_id + ' ' + line_num++ + ' POST');
 
 			e.respondWith(async function() {
-				console.log('sw ' + call_id + ' 0022');			
+				console.log('sw ' + call_id + ' ' + line_num++ + '');			
 
 				const parts = url.split('/upload?');
 				if (parts.length !== 2) {
 					const response = new Response(null, response_headers);
-					console.log('sw ' + call_id + ' 0024 not my url, url=', url);
+					console.log('sw ' + call_id + ' ' + line_num++ + ' not my url, url=', url);
 					return response;						
 				}
 				const baseurl = parts[0] + '/';			
 
 				const formdata = await e.request.formData();
-				console.log('sw ' + call_id + ' 0026, formdata=', formdata);
+				console.log('sw ' + call_id + ' ' + line_num++ + ', formdata=', formdata);
 
 				if (! formdata) {
 					const response = new Response(null, response_headers);
-					console.log('sw ' + call_id + ' 0028 no formdata, response=', response);
+					console.log('sw ' + call_id + ' ' + line_num++ + ' no formdata, response=', response);
 					return response;			
 				}
 
 				const items = await formdata.keys();
-				console.log('sw ' + call_id + ' 0040 items=', items);
+				console.log('sw ' + call_id + ' ' + line_num++ + ' items=', items);
 				let item = items.next();
 				const files = { };
 				while (!item.done) {
 					const key = item.value;
-					console.log('sw ' + call_id + ' 0042 key=' + key);
+					console.log('sw ' + call_id + ' ' + line_num++ + ' key=' + key);
 					const candidate = await formdata.get(key)
-					console.log('sw ' + call_id + ' 0044 candidate=', candidate);		
+					console.log('sw ' + call_id + ' ' + line_num++ + ' candidate=', candidate);		
 					const characterized = candidate.toString();
-					console.log('sw ' + call_id + ' 0046 characterized=' + characterized);				
+					console.log('sw ' + call_id + ' ' + line_num++ + ' characterized=' + characterized);				
 					if (characterized == '[object File]') {
-						console.log('sw ' + call_id + ' 0048 found a file');					
+						console.log('sw ' + call_id + ' ' + line_num++ + ' found a file');					
 						files[candidate.name] = candidate;
 					}
 					item = items.next();				
 				}
 				const filenames = Object.getOwnPropertyNames(files);
-				console.log('sw ' + call_id + ' 0050 filenames.length=' + filenames.length);			
+				console.log('sw ' + call_id + ' ' + line_num++ + ' filenames.length=' + filenames.length);			
 				let successes = 0;
 				let errors = 0;
 				for (let i = 0; i < filenames.length; i += 1) {
 					const filename = filenames[i]; // was sic "console"
-					console.log('sw ' + call_id + ' 0052 filename=' + filename);
+					console.log('sw ' + call_id + ' ' + line_num++ + ' filename=' + filename);
 					if (! filename) {
 						errors += 1;
 						continue;
 					}
 					const file_object = files[filename];
-					console.log('sw ' + call_id + ' 0053 file_object=', file_object);				
+					console.log('sw ' + call_id + ' ' + line_num++ + ' file_object=', file_object);				
 					const text = await file_object.text();
-					console.log('sw ' + call_id + ' 0054 text=' + text);
+					console.log('sw ' + call_id + ' ' + line_num++ + ' text=' + text);
 					// 0-length file is allowed 
 
 					const init_for_cache_copy = {  };
@@ -111,13 +112,13 @@ self.addEventListener('fetch', function(e) {
 					});
 
 					const url = baseurl + filename;
-					console.log('sw ' + call_id + ' 0055 cache with url=', url);				
+					console.log('sw ' + call_id + ' ' + line_num++ + ' cache with url=', url);				
 					//const request2cache = new Request(url, {method: 'GET'});
 					const response2cache = new Response(text, init_for_cache_copy);				
-					caches.open('data-store').then(function(cache) {
-						//console.log('sw ' + call_id + ' 0056 PUT TO PLAY cache put, request2cache=', request2cache);
+					caches.open(namespace).then(function(cache) {
+						//console.log('sw ' + call_id + ' ' + line_num++ + ' PUT TO PLAY cache put, request2cache=', request2cache);
 						cache.put(url, response2cache).then(function() {
-							console.log('sw ' + call_id + ' 0058 cache put successful');
+							console.log('sw ' + call_id + ' ' + line_num++ + ' cache put successful');
 						});
 					} )				
 
@@ -142,18 +143,18 @@ self.addEventListener('fetch', function(e) {
 
 /*			
 			const temp1 = await formdata.get('uploaded_file');
-			console.log('sw ' + call_id + ' 0060 temp1=', temp1);						
+			console.log('sw ' + call_id + ' ' + line_num++ + ' temp1=', temp1);						
 			if (! temp1) {
 				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw ' + call_id + ' 0062 response=', response);				
+				console.log('sw ' + call_id + ' ' + line_num++ + ' response=', response);				
 				return response;			
 			}
 
 			const text = await temp1.text();
-			console.log('sw ' + call_id + ' 0064 text=' + text);			
+			console.log('sw ' + call_id + ' ' + line_num++ + ' text=' + text);			
 			if (! text) {
 				const response = new Response('TEXT ' + 'err', init);
-				console.log('sw ' + call_id + ' 0066 response=', response);				
+				console.log('sw ' + call_id + ' ' + line_num++ + ' response=', response);				
 				return response;							
 			} 
 				

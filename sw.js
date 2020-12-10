@@ -3,7 +3,6 @@
 let call_id = 0
 
 self.addEventListener('fetch', function(e) {
-	//const call_id = Math.floor(Math.random() * 1000);
 	call_id += 1;
 	console.log('sw ' + call_id + ' e=', e);
 	console.log('sw ' + call_id + ' e.request=', e.request);
@@ -14,7 +13,7 @@ self.addEventListener('fetch', function(e) {
 	const namespace = 'datastore';
 	if (!pathname.startsWith('/html-form-file-io/' + namespace) ) {
 		console.log('sw ' + call_id + ' NOT FOR ME');		
-		return; // let AMP-SW's fetch event listener handle this insteadu
+		return; // let AMP-SW's fetch event listener handle this instead
 	}
 
 	e.respondWith(async function() {
@@ -70,21 +69,10 @@ self.addEventListener('fetch', function(e) {
 				return response;
 			} );
 			return response;
-		} // ^ GET
+		} // ^ HEAD or GET
 	
 		if (e.request.method == 'POST') {
 			console.log('sw ' + call_id + ' POST');
-			
-			/*
-			const parts = url.split('/upload?');
-			if (parts.length !== 2) {
-				const response = new Response(null, response_headers);
-				console.log('sw ' + call_id + ' not my url, url=', url);
-				return response;						
-			}
-			const baseurl = parts[0] + '/';
-			console.log('sw ' + call_id + ' baseurl=' + baseurl);
-			*/
 			
 			const formdata = await e.request.formData();
 			console.log('sw ' + call_id + ' formdata=', formdata);
@@ -129,21 +117,16 @@ self.addEventListener('fetch', function(e) {
 				console.log('sw ' + call_id + ' text=' + text);
 				// 0-length file is allowed 
 
-				const init_for_cache_copy = {  };
-				init_for_cache_copy.status = '200';
-				init_for_cache_copy.statusText = 'OK';
-				init_for_cache_copy.headers = new Headers({
-					'Content-Type': 'text/plain', 
-					'Content-Length': text.length
-				});
-
-				//const url = baseurl + filename;
-				//console.log('sw ' + call_id + ' cache with url=', url);				
-				//const request2cache = new Request(url, {method: 'GET'});
-				const response2cache = new Response(text, init_for_cache_copy);				
 				caches.open(namespace).then(function(cache) {
-					//console.log('sw ' + call_id + ' PUT TO PLAY cache put, request2cache=', request2cache);
-					cache.put(filename, response2cache).then(function() {
+					const init = {  };
+						init.status = '200';
+						init.statusText = 'OK';
+						init.headers = new Headers({
+							'Content-Type': 'text/plain', 
+							'Content-Length': text.length
+						});					
+					const response = new Response(text, init);
+					cache.put(filename, response).then(function() {
 						console.log('sw ' + call_id + ' cache put successful');
 					});
 				} )				
@@ -166,45 +149,6 @@ self.addEventListener('fetch', function(e) {
 	} () ); // ^ e.respondWith(async function() {		
 } ); // ^ fetch event listener
 
-/*			
-			const temp1 = await formdata.get('uploaded_file');
-			console.log('sw ' + call_id + ' temp1=', temp1);						
-			if (! temp1) {
-				const response = new Response('FORMDATA_FILE ' + 'err', init);
-				console.log('sw ' + call_id + ' response=', response);				
-				return response;			
-			}
-
-			const text = await temp1.text();
-			console.log('sw ' + call_id + ' text=' + text);			
-			if (! text) {
-				const response = new Response('TEXT ' + 'err', init);
-				console.log('sw ' + call_id + ' response=', response);				
-				return response;							
-			} 
-				
-//console.log('sw temp1a=', temp1a);
-			//temp1a.then(function(text){
-console.log('sw text=', text);					
-				const temp2 = text.replace(/\r\n/,"\n");
-console.log('sw temp2=', temp2);											
-				// take account of different line endings,
-				// between headers and within text content
-				const temp3 = temp2.split("\n");
-console.log('sw temp3=', temp3);											
-
-				const temp4 = temp3.slice(3,temp3.length-3); // THIS ABRUPTLY NO LONGER NEEDED
-console.log('sw temp4=', temp4);
-				//put(temp4, 'download'); tried idb	
-				//local_storage.setItem('download', JSON.stringify(temp4));
-//saved_array = temp4;
-//console.log('sw saved_array=', saved_array);																	
-				// testing shows 3 envelope lines, both fore and aft
-
-//payload = text;
-//console.log('sw payload=', payload);					
-	// } // SPECIAL PROCESSING else
-*/
 
 importScripts('https://cdn.ampproject.org/sw/amp-sw.js');
 AMP_SW.init({

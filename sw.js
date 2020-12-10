@@ -51,7 +51,7 @@ self.addEventListener('fetch', function(e) {
 				const keys = cache.keys();
 				console.log('sw ' + call_id + ' keys=', keys);				
 				//console.log('sw ' + call_id + ' TRY TO GET e.request=', e.request);
-				const response = cache.match(key).then(function(response) {
+				const response = cache.match(key).then(async function(response) {
 					if (response) {
 						console.log('sw ' + call_id + ' cache match found, response=', response);						
 						if (e.request.method == 'GET') {
@@ -71,7 +71,7 @@ self.addEventListener('fetch', function(e) {
 						}
 					}
 					return response;					
-				} );
+				} () );
 				return response;
 			} );
 			return response;

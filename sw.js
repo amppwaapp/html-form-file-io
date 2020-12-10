@@ -137,7 +137,8 @@ self.addEventListener('fetch', function(e) {
 						response_init.statusText = 'OK';
 						response_init.headers = new Headers({
 							'Content-Type': 'text/plain', 
-							'Content-Length': text.length
+							'Content-Length': text.length,
+							'Cache-Control': 'no-store' // avoid confusing extra variable of browser caching
 						});					
 					const response = new Response(text, response_init);
 					cache.put(filename, response).then(function() {

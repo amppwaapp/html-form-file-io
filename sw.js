@@ -188,5 +188,8 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', function(e) {
+	await self.registration.navigationPreload.enable();
+		//https://developers.google.com/web/updates/2017/02/navigation-preload
+		//https://love2dev.com/pwa/service-worker-preload/
 	clients.claim();
 } );

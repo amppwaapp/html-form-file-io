@@ -61,8 +61,14 @@ self.addEventListener('fetch', function(e) {
 							console.log('sw ' + call_id + ' HEAD response=', response);						
 						}
 					} else {
-						response = new Response(null, response_init);
-						console.log('sw ' + call_id + ' no match, response=', response);					
+						//https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/PreloadResponse
+						response = await e.preloadResponse;
+						if (response) {
+							console.log('sw ' + call_id + ' using e.preloadResponse=', e.preloadResponse);											
+						} else {
+							response = new Response(null, response_init);
+							console.log('sw ' + call_id + ' no match, response=', response);				
+						}
 					}
 					return response;					
 				} );
@@ -90,7 +96,7 @@ self.addEventListener('fetch', function(e) {
 			while (!item.done) {
 				const key = item.value;
 				console.log('sw ' + call_id + ' key=' + key);
-				const candidate = await formdata.get(key)
+				const candidate = await formdata.get(key);
 				console.log('sw ' + call_id + ' candidate=', candidate);		
 				const characterized = candidate.toString();
 				console.log('sw ' + call_id + ' characterized=' + characterized);				

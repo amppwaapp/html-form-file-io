@@ -57,6 +57,8 @@ self.addEventListener('fetch', function(e) {
 						if (e.request.method == 'GET') {
 							console.log('sw ' + call_id + ' GET');
 						} else if (e.request.method == 'HEAD') {
+							response_init.status = '200';
+							response_init.statusText = 'OK';
 							response = new Response(null, response_init);				
 							console.log('sw ' + call_id + ' HEAD response=', response);						
 						}

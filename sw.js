@@ -2,6 +2,8 @@
 
 let call_id = 0
 
+
+
 self.addEventListener('fetch', function(e) {
 	call_id += 1;
 	console.log('sw ' + call_id + ' e=', e);
@@ -72,7 +74,7 @@ self.addEventListener('fetch', function(e) {
 							console.log('sw ' + call_id + ' no match, response=', response);				
 						} 
 					}
-					e.waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
+					//e.waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
 					//The service worker navigation preload request was cancelled before 'preloadResponse' settled. If you intend to use 'preloadResponse', use waitUntil() or respondWith() to wait for the promise to settle.
 					// Failed - No file
 					return response;					
@@ -188,8 +190,30 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', function(e) {
-	await self.registration.navigationPreload.enable();
+	e.waitUntil( async function () {
+		if ( self.registration.navigationPreload ) {
+			await self.registration.navigationPreload.disable(); // en-
+			console.log('sw ' + call_id + ' navigationPreload disabled'); // en-			
+		} else {
+			console.log('sw ' + call_id + ' navigationPreload not supported');			
+		}
+	} () );	
 		//https://developers.google.com/web/updates/2017/02/navigation-preload
 		//https://love2dev.com/pwa/service-worker-preload/
+
 	clients.claim();
 } );
+
+/*
+addEventListener("fetch", function(e) {
+	e.respondWith(async function() { // Respond from the cache if we can
+		const cachedResponse = await caches.match(e.request);
+		if (cachedResponse) return cachedResponse;
+		// Else, use the preloaded response, if it's there
+		const response = await e.preloadResponse;
+		if (response) return response;
+		// Else try the network.
+		return fetch(e.request);
+	}());
+});
+*/

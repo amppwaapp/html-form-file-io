@@ -68,7 +68,7 @@ self.addEventListener('fetch', function(e) {
 						} else {
 							response = new Response(null, response_init);
 							console.log('sw ' + call_id + ' no match, response=', response);				
-						}
+						} 
 					}
 					return response;					
 				} () );

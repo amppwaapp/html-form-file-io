@@ -62,7 +62,7 @@ self.addEventListener('fetch', function(e) {
 						}
 					} else {
 						//https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/PreloadResponse
-						response = await e.preloadResponse;
+						//response = await e.preloadResponse; // IF KEPT, SHOULD HEAD/GET BE DIFFERENTIATED HERE IN 'ELSE'?
 						if (response) {
 							console.log('sw ' + call_id + ' using e.preloadResponse=', e.preloadResponse);											
 						} else {

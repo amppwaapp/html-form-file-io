@@ -19,9 +19,9 @@ self.addEventListener('fetch', function(e) {
 	e.respondWith(async function() {
 		console.log('sw ' + call_id + ' SW CLAIMING OWNERSHIP');		
 		
-		const response_headers = {  };
-			response_headers.status = '400';
-			response_headers.statusText = 'Bad Request';
+		const response_init = {  };
+			response_init.status = '400';
+			response_init.statusText = 'Bad Request';
 
 		if (e.request.method == 'HEAD' || e.request.method == 'GET') { // OTHER?
 			console.log('sw ' + call_id + ' HEAD/GET');
@@ -36,14 +36,14 @@ self.addEventListener('fetch', function(e) {
 				}
 			}());
 			if (!key) {
-				const response = new Response(null, response_headers); 
+				const response = new Response(null, response_init); 
 				console.log('sw ' + call_id + ' response=', response);				
 				return response;
 			}
 
 			const response = caches.open(namespace).then(function(cache) {				
 				if (!cache) {
-					const response = new Response(null, response_headers); 
+					const response = new Response(null, response_init); 
 					console.log('sw ' + call_id + ' response=', response);				
 					return response;
 				}
@@ -57,11 +57,11 @@ self.addEventListener('fetch', function(e) {
 						if (e.request.method == 'GET') {
 							console.log('sw ' + call_id + ' GET');
 						} else if (e.request.method == 'HEAD') {
-							response = new Response(null, response_headers);				
+							response = new Response(null, response_init);				
 							console.log('sw ' + call_id + ' HEAD response=', response);						
 						}
 					} else {
-						response = new Response(null, response_headers);
+						response = new Response(null, response_init);
 						console.log('sw ' + call_id + ' no match, response=', response);					
 					}
 					return response;					
@@ -78,7 +78,7 @@ self.addEventListener('fetch', function(e) {
 			console.log('sw ' + call_id + ' formdata=', formdata);
 
 			if (! formdata) {
-				const response = new Response(null, response_headers);
+				const response = new Response(null, response_init);
 				console.log('sw ' + call_id + ' no formdata, response=', response);
 				return response;			
 			}
@@ -118,14 +118,14 @@ self.addEventListener('fetch', function(e) {
 				// 0-length file is allowed 
 
 				caches.open(namespace).then(function(cache) {
-					const init = {  };
-						init.status = '200';
-						init.statusText = 'OK';
-						init.headers = new Headers({
+					const response_init = {  };
+						response_init.status = '200';
+						response_init.statusText = 'OK';
+						response_init.headers = new Headers({
 							'Content-Type': 'text/plain', 
 							'Content-Length': text.length
 						});					
-					const response = new Response(text, init);
+					const response = new Response(text, response_init);
 					cache.put(filename, response).then(function() {
 						console.log('sw ' + call_id + ' cache put successful');
 					});
@@ -135,15 +135,15 @@ self.addEventListener('fetch', function(e) {
 			}
 
 			if (successes > 0 && errors == 0) {
-				init.status = '200';
-				init.statusText = 'OK';
-				init.headers = new Headers({
+				response_init.status = '200';
+				response_init.statusText = 'OK';
+				response_init.headers = new Headers({
 					'Content-Type': 'application/json'
 				});
 				// , 'Content-Length': text.length
 			}
-			const response2return = new Response({ }, response_headers);								
-			return response2return;					
+			const response = new Response({ }, response_init);								
+			return response;					
 		} // ^ POST
 		
 	} () ); // ^ e.respondWith(async function() {		

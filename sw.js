@@ -149,6 +149,7 @@ self.addEventListener('fetch', function(e) {
 				successes += 1;
 			}
 
+			console.log('sw ' + call_id + ' successes=' + successes + ' errors=' + errors);
 			if (successes > 0 && errors == 0) {
 				response_init.status = '200';
 				response_init.statusText = 'OK';
@@ -157,7 +158,7 @@ self.addEventListener('fetch', function(e) {
 				});
 				// , 'Content-Length': text.length
 			}
-			const response = new Response({ }, response_init);								
+			const response = new Response(JSON.stringify( { } ), response_init);								
 			return response;					
 		} // ^ POST
 		

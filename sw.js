@@ -72,7 +72,7 @@ self.addEventListener('fetch', function(e) {
 							console.log('sw ' + call_id + ' no match, response=', response);				
 						} 
 					}
-					waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
+					e.waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
 					//The service worker navigation preload request was cancelled before 'preloadResponse' settled. If you intend to use 'preloadResponse', use waitUntil() or respondWith() to wait for the promise to settle.
 					// Failed - No file
 					return response;					

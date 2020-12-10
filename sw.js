@@ -140,6 +140,7 @@ self.addEventListener('fetch', function(e) {
 						response_init.headers = new Headers({
 							'Content-Type': 'text/plain', 
 							'Content-Length': text.length,
+							'Content-Disposition': 'attachment; filename="' + filename + '"',
 							'Cache-Control': 'no-store' // avoid confusing extra variable of browser caching
 						});					
 					const response = new Response(text, response_init);

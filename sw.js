@@ -66,12 +66,12 @@ self.addEventListener('fetch', function(e) {
 						}
 					} else {
 						//https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/PreloadResponse
-						//response = await e.preloadResponse; // IF KEPT, SHOULD HEAD/GET BE DIFFERENTIATED HERE IN 'ELSE'?
+						response = await e.preloadResponse; // IF KEPT, SHOULD HEAD/GET BE DIFFERENTIATED HERE IN 'ELSE'?
 						if (response) {
 							console.log('sw ' + call_id + ' using e.preloadResponse=', e.preloadResponse);											
 						} else {
 							response = new Response(null, response_init);
-							console.log('sw ' + call_id + ' no match, response=', response);				
+							console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);				
 						} 
 					}
 					//e.waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
@@ -192,8 +192,8 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', function(e) {
 	e.waitUntil( async function () {
 		if ( self.registration.navigationPreload ) {
-			await self.registration.navigationPreload.disable(); // en-
-			console.log('sw ' + call_id + ' navigationPreload disabled'); // en-			
+			await self.registration.navigationPreload.enable(); // dis-
+			console.log('sw ' + call_id + ' navigationPreload disabled'); // dis-			
 		} else {
 			console.log('sw ' + call_id + ' navigationPreload not supported');			
 		}

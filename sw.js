@@ -95,8 +95,11 @@ self.addEventListener('fetch', function(e) {
 				const characterized = candidate.toString();
 				console.log('sw ' + call_id + ' characterized=' + characterized);				
 				if (characterized == '[object File]') {
-					console.log('sw ' + call_id + ' found a file');					
-					files[candidate.name] = candidate;
+					console.log('sw ' + call_id + ' found a file slot');					
+					if (candidate.name) {
+						console.log('sw ' + call_id + ' found a named (i.e., uploaded, file');							
+						files[candidate.name] = candidate;
+					}
 				}
 				item = items.next();				
 			}
@@ -105,7 +108,7 @@ self.addEventListener('fetch', function(e) {
 			let successes = 0;
 			let errors = 0;
 			for (let i = 0; i < filenames.length; i += 1) {
-				const filename = filenames[i]; // was sic "console"
+				const filename = filenames[i];
 				console.log('sw ' + call_id + ' filename=' + filename);
 				if (! filename) {
 					errors += 1;
@@ -114,8 +117,8 @@ self.addEventListener('fetch', function(e) {
 				const file_object = files[filename];
 				console.log('sw ' + call_id + ' file_object=', file_object);				
 				const text = await file_object.text();
-				console.log('sw ' + call_id + ' text=' + text);
-				// 0-length file is allowed 
+				//console.log('sw ' + call_id + ' text=' + text);
+				//0-length file is allowed 
 
 				caches.open(namespace).then(function(cache) {
 					const response_init = {  };
@@ -127,7 +130,7 @@ self.addEventListener('fetch', function(e) {
 						});					
 					const response = new Response(text, response_init);
 					cache.put(filename, response).then(function() {
-						console.log('sw ' + call_id + ' cache put successful');
+						console.log('sw ' + call_id + ' cache put successful, under key=' + filename);
 					});
 				} )				
 

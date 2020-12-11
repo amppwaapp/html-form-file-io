@@ -138,7 +138,7 @@ self.addEventListener('fetch', function(e) {
 						cached_response_init.status = '200';
 						cached_response_init.statusText = 'OK';
 						cached_response_init.headers = new Headers({
-							'Cache-Control': 'max-age=31536000', 
+							'Cache-Control': 'max-age=0', // 31536000 
 							//'Content-Disposition': 'attachment', // ; filename="' + filename + '"', // works but removes user choice of filename							
 							'Content-Length': text.length,
 							'Content-Type': 'text/plain'							

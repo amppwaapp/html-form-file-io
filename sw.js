@@ -134,16 +134,16 @@ self.addEventListener('fetch', function(e) {
 				//0-length file is allowed 
 
 				caches.open(namespace).then(function(cache) {
-					const response_init = {  };
-						response_init.status = '200';
-						response_init.statusText = 'OK';
-						response_init.headers = new Headers({
-							'Content-Type': 'text/plain', 
+					const cached_response_init = {  };
+						cached_response_init.status = '200';
+						cached_response_init.statusText = 'OK';
+						cached_response_init.headers = new Headers({
+							Cache-Control: max-age=31536000, 
+							//'Content-Disposition': 'attachment', // ; filename="' + filename + '"', // works but removes user choice of filename							
 							'Content-Length': text.length,
-							'Content-Disposition': 'attachment' //, ; filename="' + filename + '"', // works but removes user choice of filename
-							//'Cache-Control': 'no-store' // avoid confusing extra variable of browser caching
+							'Content-Type': 'text/plain'							
 						});					
-					const response = new Response(text, response_init);
+					const response = new Response(text, cached_response_init);
 					cache.put(filename, response).then(function() {
 						console.log('sw ' + call_id + ' cache put successful, under key=' + filename);
 					});

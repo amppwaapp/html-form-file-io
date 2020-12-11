@@ -4,7 +4,7 @@ let call_id = 0
 
 self.addEventListener('fetch', function(e) {
 	call_id += 1;
-	const date = Date.now();
+	const date = new Date( Date.now() );
 	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 	console.log('sw ' + timestamp + ' ' + call_id + ' e=', e);
 	
@@ -192,7 +192,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', function(e) {
-	const date = Date.now();
+	const date = new Date( Date.now() );
 	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 	console.log('sw ' + timestamp + ' ' + call_id + ' e=', e);
 	

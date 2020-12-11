@@ -2,11 +2,12 @@
 
 let call_id = 0
 
-
-
 self.addEventListener('fetch', function(e) {
 	call_id += 1;
-	console.log('sw ' + call_id + ' e=', e);
+	const date = new Date(timestamp * 1000);
+	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+	console.log('sw ' + timestamp + ' ' + call_id + ' e=', e);
+	
 	console.log('sw ' + call_id + ' e.request=', e.request);
 	const url = new URL(e.request.url);
 	console.log('sw ' + call_id + ' url=e.request.url=', url);
@@ -191,6 +192,10 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', function(e) {
+	const date = new Date(timestamp * 1000);
+	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+	console.log('sw ' + timestamp + ' ' + call_id + ' e=', e);
+	
 	e.waitUntil( async function () {
 		if ( self.registration.navigationPreload ) {
 			await self.registration.navigationPreload.enable(); // dis-

@@ -63,10 +63,11 @@ self.addEventListener('fetch', function(e) {
 						console.log('sw ' + call_id + ' keys=', keys);				
 						const items = [ ];
 						for (let i = 0; i < keys.length; i += 1) {
-							const key = keys[i];
+							const request = keys[i];
 							const item = { };
-							item.title = key;
-							item.url = 'https://amppwa.app/html-form-file-io/' + namespace + '/' + key;
+							item.url = request.url;
+							const parts = item.url.split('/');
+							item.title = parts.pop();							
 							items.push(item);
 						}
 						const container = { };

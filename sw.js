@@ -71,13 +71,13 @@ self.addEventListener('fetch', function(e) {
 						}
 						const container = { };
 						container.items = items;
+						body = JSON.stringify(container);
+						console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
 						response_init.headers = new Headers({
 							'Cache-Control': 'max-age=0', // 31536000 
 							'Content-Length': body.length,
 							'Content-Type': 'application/json'
 						});
-						body = JSON.stringify(container);
-						console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);
 					}
 					response = new Response(body, response_init);				
 					console.log('sw ' + call_id + ' response=', response);								

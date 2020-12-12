@@ -79,6 +79,18 @@
   <body>
     <a href='https://amppwa.app/html-form-file-io/datastore/timeline-urls.pl'>timeline-urls.pl</a>
     <a href='https://amppwa.app/html-form-file-io/datastore/timeline-for-urls.txt'>timeline-for-urls.txt</a>
+    <amp-list
+      width="auto"
+      height="100"
+      layout="fixed-height"
+      src='/html-form-file-io/datastore/index.json'
+    >
+      <template type="amp-mustache">
+        <div class="url-entry">
+          <a href="{{url}}">{{title}}</a>
+        </div>
+      </template>
+    </amp-list>
     <div class="hero">
         <amp-img layout="fill"
         height="2932" 

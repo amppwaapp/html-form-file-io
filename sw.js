@@ -79,8 +79,9 @@ self.addEventListener('fetch', function(e) {
 							'Content-Type': 'application/json'
 						});
 					}
-					response = new Response(body, response_init);				
-					console.log('sw ' + call_id + ' response=', response);								
+					const response = new Response(body, response_init);				
+					console.log('sw ' + call_id + ' response=', response);
+					return response;
 				}
 				//console.log('sw ' + call_id + ' TRY TO GET e.request=', e.request);
 				const response = cache.match(key).then(async function(response) {

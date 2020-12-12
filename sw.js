@@ -44,7 +44,7 @@ self.addEventListener('fetch', function(e) {
 				return response;
 			}
 
-			const response = caches.open(namespace).then(function(cache) {				
+			const response = caches.open(namespace).then(async function(cache) {				
 				if (!cache) {
 					const response = new Response(null, response_init); 
 					console.log('sw ' + call_id + ' response=', response);				
@@ -59,7 +59,7 @@ self.addEventListener('fetch', function(e) {
 						console.log('sw ' + call_id + ' HEAD');					
 					} else if (e.request.method == 'GET') {
 						console.log('sw ' + call_id + ' GET');
-						const keys = cache.keys();
+						const keys = await cache.keys();
 						console.log('sw ' + call_id + ' keys=', keys);				
 						const items = [ ];
 						for (let i = 0; i < keys.length; i += 1) {
@@ -115,7 +115,7 @@ self.addEventListener('fetch', function(e) {
 					return response;					
 				} () );
 				return response;
-			} );
+			} () );
 			return response;
 		} // ^ HEAD or GET
 	

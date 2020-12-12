@@ -51,8 +51,36 @@ self.addEventListener('fetch', function(e) {
 					return response;
 				}
 				console.log('sw ' + call_id + ' cache=', cache);
-				const keys = cache.keys();
-				console.log('sw ' + call_id + ' keys=', keys);				
+				if (key === 'index.json') {
+					response_init.status = '200';
+					response_init.statusText = 'OK';
+					const body = null;					
+					if (e.request.method == 'HEAD') {
+						console.log('sw ' + call_id + ' HEAD');					
+					} else if (e.request.method == 'GET') {
+						console.log('sw ' + call_id + ' GET');
+						const keys = cache.keys();
+						console.log('sw ' + call_id + ' keys=', keys);				
+						const items = [ ];
+						for (let i = 0; i < keys.length; i += 1) {
+							const key = keys[i];
+							const item = { };
+							item.title = key;
+							item.url = 'https://amppwa.app/html-form-file-io/' + namespace + '/' + key;
+							items.push(item);
+						}
+						const container = { };
+						container.items = items;
+						response_init.headers = new Headers({
+							'Cache-Control': 'max-age=0', // 31536000 
+							'Content-Length': body.length,
+							'Content-Type': 'application/json'
+						});
+						body = JSON.stringify(container);					
+					}
+					response = new Response(body, response_init);				
+					console.log('sw ' + call_id + ' response=', response);								
+				}
 				//console.log('sw ' + call_id + ' TRY TO GET e.request=', e.request);
 				const response = cache.match(key).then(async function(response) {
 					if (response) {

@@ -2,7 +2,7 @@
 
 let call_id = 0
 
-self.addEventListener('fetch', function(e) {
+self.addEventListener('fetch', function(e) { 
 	call_id += 1;
 	const date = new Date( Date.now() );
 	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(); 

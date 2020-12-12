@@ -6,7 +6,8 @@ self.addEventListener('fetch', function(e) {
 	call_id += 1;
 	const date = new Date( Date.now() );
 	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(); 
-	console.log('sw ' + timestamp + ' ' + call_id + ' e=', e);
+	console.log('sw ' + call_id + ' ' + timestamp);
+	console.log('sw ' + call_id + ' e=', e);	
 	
 	console.log('sw ' + call_id + ' e.request=', e.request);
 	const url = new URL(e.request.url);
@@ -45,7 +46,7 @@ self.addEventListener('fetch', function(e) {
 				return response;
 			}
 
-			const response = caches.open(namespace).then(function(cache) { // tried to have this async to await, didn't pass defined cache
+			const response = caches.open(namespace).then(function(cache) { // tried to have this async to use await, didn't pass defined cache
 				console.log('sw ' + call_id + ' (as passed in) cache=', cache);
 				//cache = await cache
 				//console.log('sw ' + call_id + ' (settled if needed) cache=', cache);				
@@ -59,49 +60,48 @@ self.addEventListener('fetch', function(e) {
 					response_init.statusText = 'OK';
 					let body = null;					
 					if (e.request.method == 'HEAD') {
-						console.log('sw ' + call_id + ' HEAD');					
+						console.log('sw ' + call_id + ' HEAD');							
+						const response = new Response(null, response_init);				
+						console.log('sw ' + call_id + ' response=', response);
+						return response;
 					} else if (e.request.method == 'GET') {
 						console.log('sw ' + call_id + ' GET');
-						const keys = (async function() {
-							const as_promise = cache.keys();
-							console.log('sw ' + call_id + ' keys as_promise=', as_promise);							
-							const as_value = await as_promise;
-							console.log('sw ' + call_id + ' keys settled, as_value=', as_value);								
-							return as_value;
-						} () );
-						console.log('sw ' + call_id + ' as returned keys=', keys);
-						console.log('sw ' + call_id + ' keys.length=', keys.length);
-						const items = [ ];
-						for (let i = 0; i < keys.length; i += 1) {
-							const request = keys[i];
-							console.log('sw ' + call_id + ' as key request=', request);
-							const item = { };
-							let request_url = request.url;
-							console.log('sw ' + call_id + ' request_url=', request_url);							
-							const parts = request_url.split('/');
-							item.title = parts.pop(); // use filename from upload as title
-							parts.push(namespace); // insert into url
-							parts.push(item.title); // put back
-							item.url = parts.join('/');
-							console.log('sw ' + call_id + ' completed item=', item);							
-							items.push(item);
-						}
-						console.log('sw ' + call_id + ' completed items=', items);												
-						const container = { };
-						container.items = items;
-						console.log('sw ' + call_id + ' completed container=', container);						
-						body = JSON.stringify(container);
-						console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
-						response_init.headers = new Headers({
-							'Cache-Control': 'max-age=0', // 31536000 XXXXXXXXX
-							'Content-Length': body.length,
-							'Content-Type': 'application/json'
-						});
+						return cache.keys().then(function(keys) {
+							console.log('sw ' + call_id + ' settled keys=', keys);
+							console.log('sw ' + call_id + ' keys.length=', keys.length);	
+							const items = [ ];
+							for (let i = 0; i < keys.length; i += 1) {
+								const request = keys[i];
+								console.log('sw ' + call_id + ' as key request=', request);
+								const item = { };
+								let request_url = request.url;
+								console.log('sw ' + call_id + ' request_url=', request_url);							
+								const parts = request_url.split('/');
+								item.title = parts.pop(); // use filename from upload as title
+								parts.push(namespace); // insert into url
+								parts.push(item.title); // put back
+								item.url = parts.join('/');
+								console.log('sw ' + call_id + ' completed item=', item);							
+								items.push(item);
+							}
+							console.log('sw ' + call_id + ' completed items=', items);												
+							const container = { };
+							container.items = items;
+							console.log('sw ' + call_id + ' completed container=', container);						
+							body = JSON.stringify(container);
+							console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
+							response_init.headers = new Headers({
+								'Cache-Control': 'max-age=0', // 31536000 XXXXXXXXX
+								'Content-Length': body.length,
+								'Content-Type': 'application/json'
+							});
+							const response = new Response(body, response_init);				
+							console.log('sw ' + call_id + ' response=', response);
+							return response;							
+						} );
 					}
-					const response = new Response(body, response_init);				
-					console.log('sw ' + call_id + ' response=', response);
-					return response;
-				}
+				} // end special case index.json
+				
 				//console.log('sw ' + call_id + ' TRY TO GET e.request=', e.request);
 				const response = cache.match(key).then(async function(response) {
 					if (response) {

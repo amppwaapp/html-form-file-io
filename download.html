@@ -84,7 +84,7 @@
     <a href='https://amppwa.app/html-form-file-io/datastore/timeline-urls.pl'>timeline-urls.pl</a>
     <a href='https://amppwa.app/html-form-file-io/datastore/timeline-for-urls.txt'>timeline-for-urls.txt</a>
 
-    <amp-list
+    <!-- amp-list
       width="auto"
       height="100"
       layout="fixed-height"
@@ -95,7 +95,32 @@
           <a href="{{url}}">{{title}}</a>
         </div>
       </template>
-    </amp-list>
+    </amp-list -->
+    
+    <amp-script id="dataFunctions" script="local-script" nodom></amp-script>
+    <script id="local-script" type="text/plain" target="amp-script">
+      function getRemoteData() {
+        return fetch('https://amppwa.app/html-form-file-io/datastore/index.json')
+          .then(resp => resp.json())
+          .then(transformData)
+      }
+      exportFunction('getRemoteData', getRemoteData);
+    </script>
+
+    <!-- "exported-functions" is the <amp-script> id, and "getRemoteData" corresponds to the exported function. -->
+    <amp-list
+      id="amp-list"
+      width="auto"
+      height="100"
+      layout="fixed-height"
+      src="amp-script:dataFunctions.getRemoteData"
+    >
+      <template type="amp-mustache">
+        <div class="url-entry">
+          <a href="{{url}}">{{title}}</a>
+        </div>
+      </template>
+  </amp-list>      
     
     <!-- amp-script width="200" height="100" script="hello-world">
       <ul id='list'></ul>

@@ -65,9 +65,12 @@ self.addEventListener('fetch', function(e) {
 						for (let i = 0; i < keys.length; i += 1) {
 							const request = keys[i];
 							const item = { };
-							item.url = request.url;
-							const parts = item.url.split('/');
-							item.title = parts.pop();							
+							let request_url = request.url;
+							const parts = request_url.split('/');
+							item.title = parts.pop();
+							parts.push(namespace);
+							parts.push(item.title);
+							item.url = parts.join('/');
 							items.push(item);
 						}
 						const container = { };

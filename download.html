@@ -102,7 +102,7 @@
       function getRemoteData() {
         return fetch('https://amppwa.app/html-form-file-io/datastore/index.json')
           .then(resp => resp.json())
-          .then(transformData)
+          // .then(transformData)
       }
       exportFunction('getRemoteData', getRemoteData);
     </script>

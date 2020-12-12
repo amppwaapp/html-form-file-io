@@ -62,7 +62,9 @@ self.addEventListener('fetch', function(e) {
 						console.log('sw ' + call_id + ' HEAD');					
 					} else if (e.request.method == 'GET') {
 						console.log('sw ' + call_id + ' GET');
-						const keys = await cache.keys();
+						const keys = (async function() {
+							return await cache.keys();
+						} () );
 						console.log('sw ' + call_id + ' keys=', keys);				
 						const items = [ ];
 						for (let i = 0; i < keys.length; i += 1) {

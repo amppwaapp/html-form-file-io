@@ -63,9 +63,13 @@ self.addEventListener('fetch', function(e) {
 					} else if (e.request.method == 'GET') {
 						console.log('sw ' + call_id + ' GET');
 						const keys = (async function() {
-							return await cache.keys();
+							const as_promise = cache.keys();
+							console.log('sw ' + call_id + ' keys as_promise=', as_promise);							
+							const as_value = await as_promise;
+							console.log('sw ' + call_id + ' keys settled, as_value=', as_value);								
+							return as_value;
 						} () );
-						console.log('sw ' + call_id + ' keys=', keys);
+						console.log('sw ' + call_id + ' as returned keys=', keys);
 						console.log('sw ' + call_id + ' keys.length=', keys.length);
 						const items = [ ];
 						for (let i = 0; i < keys.length; i += 1) {

@@ -54,7 +54,7 @@ self.addEventListener('fetch', function(e) {
 				if (key === 'index.json') {
 					response_init.status = '200';
 					response_init.statusText = 'OK';
-					const body = null;					
+					let body = null;					
 					if (e.request.method == 'HEAD') {
 						console.log('sw ' + call_id + ' HEAD');					
 					} else if (e.request.method == 'GET') {

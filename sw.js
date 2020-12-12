@@ -38,19 +38,22 @@ self.addEventListener('fetch', function(e) {
 					return '';					
 				}
 			}());
+			console.log('sw ' + call_id + ' key=', key);			
 			if (!key) {
 				const response = new Response(null, response_init); 
 				console.log('sw ' + call_id + ' response=', response);				
 				return response;
 			}
 
-			const response = caches.open(namespace).then(async function(cache) {				
+			const response = caches.open(namespace).then(async function(cache) {
+				console.log('sw ' + call_id + ' (as passed in) cache=', cache);
+				cache = await cache
+				console.log('sw ' + call_id + ' (settled if needed) cache=', cache);				
 				if (!cache) {
 					const response = new Response(null, response_init); 
 					console.log('sw ' + call_id + ' response=', response);				
 					return response;
 				}
-				console.log('sw ' + call_id + ' cache=', cache);
 				if (key === 'index.json') {
 					response_init.status = '200';
 					response_init.statusText = 'OK';

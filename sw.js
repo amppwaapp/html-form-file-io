@@ -76,7 +76,8 @@ self.addEventListener('fetch', function(e) {
 							'Content-Length': body.length,
 							'Content-Type': 'application/json'
 						});
-						body = JSON.stringify(container);					
+						body = JSON.stringify(container);
+						console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);
 					}
 					response = new Response(body, response_init);				
 					console.log('sw ' + call_id + ' response=', response);								

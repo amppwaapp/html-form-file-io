@@ -65,21 +65,27 @@ self.addEventListener('fetch', function(e) {
 						const keys = (async function() {
 							return await cache.keys();
 						} () );
-						console.log('sw ' + call_id + ' keys=', keys);				
+						console.log('sw ' + call_id + ' keys=', keys);
+						console.log('sw ' + call_id + ' keys.length=', keys.length);
 						const items = [ ];
 						for (let i = 0; i < keys.length; i += 1) {
 							const request = keys[i];
+							console.log('sw ' + call_id + ' as key request=', request);
 							const item = { };
 							let request_url = request.url;
+							console.log('sw ' + call_id + ' request_url=', request_url);							
 							const parts = request_url.split('/');
 							item.title = parts.pop(); // use filename from upload as title
 							parts.push(namespace); // insert into url
 							parts.push(item.title); // put back
 							item.url = parts.join('/');
+							console.log('sw ' + call_id + ' completed item=', item);							
 							items.push(item);
 						}
+						console.log('sw ' + call_id + ' completed items=', items);												
 						const container = { };
 						container.items = items;
+						console.log('sw ' + call_id + ' completed container=', container);						
 						body = JSON.stringify(container);
 						console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
 						response_init.headers = new Headers({

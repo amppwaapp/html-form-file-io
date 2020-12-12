@@ -45,13 +45,13 @@ self.addEventListener('fetch', function(e) {
 				return response;
 			}
 
-			const response = caches.open(namespace).then(async function(cache) {
+			const response = caches.open(namespace).then(function(cache) { // tried to have this async to await, didn't pass defined cache
 				console.log('sw ' + call_id + ' (as passed in) cache=', cache);
-				cache = await cache
-				console.log('sw ' + call_id + ' (settled if needed) cache=', cache);				
+				//cache = await cache
+				//console.log('sw ' + call_id + ' (settled if needed) cache=', cache);				
 				if (!cache) {
 					const response = new Response(null, response_init); 
-					console.log('sw ' + call_id + ' response=', response);				
+					console.log('sw ' + call_id + ' no cache, response=', response);				
 					return response;
 				}
 				if (key === 'index.json') {
@@ -70,9 +70,9 @@ self.addEventListener('fetch', function(e) {
 							const item = { };
 							let request_url = request.url;
 							const parts = request_url.split('/');
-							item.title = parts.pop();
-							parts.push(namespace);
-							parts.push(item.title);
+							item.title = parts.pop(); // use filename from upload as title
+							parts.push(namespace); // insert into url
+							parts.push(item.title); // put back
 							item.url = parts.join('/');
 							items.push(item);
 						}
@@ -81,7 +81,7 @@ self.addEventListener('fetch', function(e) {
 						body = JSON.stringify(container);
 						console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
 						response_init.headers = new Headers({
-							'Cache-Control': 'max-age=0', // 31536000 
+							'Cache-Control': 'max-age=0', // 31536000 XXXXXXXXX
 							'Content-Length': body.length,
 							'Content-Type': 'application/json'
 						});
@@ -118,7 +118,7 @@ self.addEventListener('fetch', function(e) {
 					return response;					
 				} () );
 				return response;
-			} () );
+			} );
 			return response;
 		} // ^ HEAD or GET
 	

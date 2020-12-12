@@ -80,19 +80,19 @@
   <body>
     <a href='https://amppwa.app/html-form-file-io/datastore/timeline-urls.pl'>timeline-urls.pl</a>
     <a href='https://amppwa.app/html-form-file-io/datastore/timeline-for-urls.txt'>timeline-for-urls.txt</a>
-    <amp-list
-      width="auto"
-      height="100"
-      layout="fixed-height"
-      src='datastore/index.json'
-    >
-      <template type="amp-mustache">
-        <div class="url-entry">
-          <a href="{{url}}">{{title}}</a>
-        </div>
-      </template>
-    </amp-list>
-    <!-- /html-form-file-io/ -->
+    
+    <amp-script width="200" height="100" script="hello-world">
+      <ul id='list'></ul>
+    </amp-script>
+    <script id="hello-world" type="text/plain" target="amp-script">
+      const list = document.querySelector('ul#list');
+      for (let i = 0; i < 3; i +=1) {
+        const li = document.createElement('li');
+        li.textContent = 'xxx';
+        list.appendChild(li);
+      }
+    </script>    
+    
     <div class="hero">
         <amp-img layout="fill"
         height="2932" 

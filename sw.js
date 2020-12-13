@@ -46,7 +46,7 @@ self.addEventListener('fetch', function(e) {
 				return response;
 			}
 			
-			const inline = (function() {
+			const inline = (function() { 
 				let inline = true;
 				if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
 					inline = false;

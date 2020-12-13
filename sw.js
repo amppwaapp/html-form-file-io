@@ -55,7 +55,7 @@ self.addEventListener('fetch', function(e) {
 					console.log('sw ' + call_id + ' no cache, response=', response);				
 					return response;
 				}
-				if (key === 'index.json') {
+				if (key === 'index.json' || key === 'index.html') {
 					response_init.status = '200';
 					response_init.statusText = 'OK';
 					let body = null;					
@@ -87,14 +87,22 @@ self.addEventListener('fetch', function(e) {
 							console.log('sw ' + call_id + ' completed items=', items);												
 							const container = { };
 							container.items = items;
-							console.log('sw ' + call_id + ' completed container=', container);						
-							body = JSON.stringify(container);
-							console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
-							response_init.headers = new Headers({
-								'Cache-Control': 'max-age=0', // 31536000 XXXXXXXXX
-								'Content-Length': body.length,
-								'Content-Type': 'application/json'
-							});
+							console.log('sw ' + call_id + ' completed container=', container);
+							response_init.headers = new Headers({ });							
+							if (key === 'index.json') {
+								console.log('sw ' + call_id + ' json');
+								response_init.headers['Content-Type'] = 'application/json';
+								body = JSON.stringify(container);
+								console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
+		
+							} else if (key === 'index.html') {
+								console.log('sw ' + call_id + ' html');			
+								response_init.headers['Content-Type'] = 'text/html';
+								response = new Response(null, response_init);
+								//console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);
+							}
+							response_init.headers['Cache-Control'] = 'max-age=0'; // 31536000 XXXXXXXXX
+							response_init.headers['Content-Length'] = body.length;
 							const response = new Response(body, response_init);				
 							console.log('sw ' + call_id + ' response=', response);
 							return response;							

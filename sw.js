@@ -45,6 +45,14 @@ self.addEventListener('fetch', function(e) {
 				console.log('sw ' + call_id + ' response=', response);				
 				return response;
 			}
+			
+			const inline = (function() {
+				let inline = true;
+				if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
+					inline = false;
+				}
+				return inline;
+			} ) ();
 
 			const response = caches.open(namespace).then(function(cache) { // tried to have this async to use await, didn't pass defined cache
 				console.log('sw ' + call_id + ' (as passed in) cache=', cache);
@@ -116,6 +124,9 @@ self.addEventListener('fetch', function(e) {
 						console.log('sw ' + call_id + ' cache match found, response=', response);						
 						if (e.request.method == 'GET') {
 							console.log('sw ' + call_id + ' GET');
+							if (inline) {
+								response.headers.set('Content-Disposition', 'inline');
+							}
 						} else if (e.request.method == 'HEAD') {
 							response_init.status = '200';
 							response_init.statusText = 'OK';
@@ -197,7 +208,7 @@ self.addEventListener('fetch', function(e) {
 						cached_response_init.statusText = 'OK';
 						cached_response_init.headers = new Headers({
 							'Cache-Control': 'max-age=0', // 31536000 
-							//'Content-Disposition': 'attachment', // ; filename="' + filename + '"', // works but removes user choice of filename							
+							'Content-Disposition': 'attachment; filename="' + filename + '"', // unfortunately, user won't be able to override this filename							
 							'Content-Length': text.length,
 							'Content-Type': 'text/plain'							
 						});					

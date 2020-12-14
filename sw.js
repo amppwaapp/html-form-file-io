@@ -6,14 +6,15 @@ self.addEventListener('fetch', function(e) {
 	call_id += 1;
 	const date = new Date( Date.now() );
 	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-	const url = new URL(e.request.url);
+	const request = e.request;	
+	const url = new URL(request);
 	const pathname = url.pathname;	
-	const method = url.method;
+	const method = request.method;
 	console.log('sw ' + call_id + ' ' + timestamp + ' pathname=' + pathname);
 	console.log('sw ' + call_id + ' e=', e);	
-	console.log('sw ' + call_id + ' e.request=', e.request);
+	console.log('sw ' + call_id + ' e.request=', request);
 	console.log('sw ' + call_id + ' e.request.url=', url);
-	console.log('sw ' + call_id + ' e.request.url.method=' + method);	
+	console.log('sw ' + call_id + ' e.request.method=' + method);	
 	
 	if ( ! ['head', 'get', 'post'].includes(method) ) {
 		console.log('sw ' + call_id + ' NOT FOR ME');		

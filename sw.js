@@ -40,125 +40,126 @@ self.addEventListener('fetch', function(e) {
 			console.log('sw ' + call_id + ' no cache, response=', response);				
 			return response;
 		}
-			
-		const key = (function() {
-			const parts = pathname.split('/html-form-file-io/' + namespace + '/');
-			if (parts.length === 2) {
-				return parts[1];
-			} else {
-				return '';					
-			}
-		}());
-		console.log('sw ' + call_id + ' key=', key);			
-		if (!key) {
-			const response = new Response(null, response_init); 
-			console.log('sw ' + call_id + ' response=', response);				
-			return response;
-		}
-		
-		const [base, extension] = (function(key) {
-			let base = key;
-			let extension = '';
-			const parts = key.split('.');
-			if (parts.length > 1) {
-				extension = parts.pop();
-				base = parts.join('.');
-			}
-			return [base, extension];
-		}(key));
-		console.log('sw ' + call_id + ' base=' + base);			
-		console.log('sw ' + call_id + ' extension=' + extension);			
-		
-		if ( 'index' === base  && ['json','html'].includes(extension) ) {
-			response_init.status = '200';
-			response_init.statusText = 'OK';
-			let body = null;					
-			if ('head' === method) {
-				console.log('sw ' + call_id + ' head');							
-				const response = new Response(null, response_init);				
-				console.log('sw ' + call_id + ' response=', response);
+
+		if ( ['head', 'get'].includes(method) ) {
+			const key = (function() {
+				const parts = pathname.split('/html-form-file-io/' + namespace + '/');
+				if (parts.length === 2) {
+					return parts[1];
+				} else {
+					return '';					
+				}
+			}());
+			console.log('sw ' + call_id + ' key=', key);			
+			if (!key) {
+				const response = new Response(null, response_init); 
+				console.log('sw ' + call_id + ' response=', response);				
 				return response;
 			}
-			console.log('sw ' + call_id + ' get');
-			const keys = await cache.keys();
-			console.log('sw ' + call_id + ' settled keys=', keys);
-			console.log('sw ' + call_id + ' keys.length=', keys.length);	
-			const items = [ ];
-			for (let i = 0; i < keys.length; i += 1) {
-				const request = keys[i];
-				console.log('sw ' + call_id + ' as key request=', request);
-				const item = { };
-				let request_url = request.url;
-				console.log('sw ' + call_id + ' request_url=', request_url);							
-				const parts = request_url.split('/');
-				item.title = parts.pop(); // use filename from upload as title
-				parts.push(namespace); // insert into url
-				parts.push(item.title); // put back
-				item.url = parts.join('/');
-				console.log('sw ' + call_id + ' completed item=', item);							
-				items.push(item);
-			}
-			console.log('sw ' + call_id + ' completed items=', items);												
-			const container = { };
-			container.items = items;
-			console.log('sw ' + call_id + ' completed container=', container);
-			response_init.headers = new Headers({ });							
-			if ('json' == extension) {
-				console.log('sw ' + call_id + ' json');
-				response_init.headers['Content-Type'] = 'application/json';
-				body = JSON.stringify(container);
-				console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
-			} else if ('html' == extension) {
-				console.log('sw ' + call_id + ' html');			
-				response_init.headers['Content-Type'] = 'text/html';
-				response = new Response(null, response_init);
-				//console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);
-			}
-			response_init.headers['Cache-Control'] = 'max-age=0'; // 31536000 XXXXXXXXX
-			response_init.headers['Content-Length'] = body.length;
-			const response = new Response(body, response_init);				
-			console.log('sw ' + call_id + ' response=', response);
-			return response;							
-		} // end special case index.*
-							
-		const response = await cache.match(key);
-		if (response) {
-			console.log('sw ' + call_id + ' cache match found, response=', response);						
-			if ('head' == method) {
+
+			const [base, extension] = (function(key) {
+				let base = key;
+				let extension = '';
+				const parts = key.split('.');
+				if (parts.length > 1) {
+					extension = parts.pop();
+					base = parts.join('.');
+				}
+				return [base, extension];
+			}(key));
+			console.log('sw ' + call_id + ' base=' + base);			
+			console.log('sw ' + call_id + ' extension=' + extension);			
+
+			if ( 'index' === base  && ['json','html'].includes(extension) ) {
 				response_init.status = '200';
 				response_init.statusText = 'OK';
-				response = new Response(null, response_init);				
-				console.log('sw ' + call_id + ' head response=', response);						
-			} else if ('get' == method) {
-				console.log('sw ' + call_id + ' get');							
-				const inline = (function() { 
-					let inline = true;
-					if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
-						inline = false;
-					}
-					return inline;
-				} ) ();							
-				if (inline) {
-					response.headers.set('Content-Disposition', 'inline');
+				let body = null;					
+				if ('head' === method) {
+					console.log('sw ' + call_id + ' head');							
+					const response = new Response(null, response_init);				
+					console.log('sw ' + call_id + ' response=', response);
+					return response;
 				}
-			}
-		} else {
-			//https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/PreloadResponse
-			response = await e.preloadResponse; // IF KEPT, SHOULD head/get BE DIFFERENTIATED HERE IN 'ELSE'?
+				console.log('sw ' + call_id + ' get');
+				const keys = await cache.keys();
+				console.log('sw ' + call_id + ' settled keys=', keys);
+				console.log('sw ' + call_id + ' keys.length=', keys.length);	
+				const items = [ ];
+				for (let i = 0; i < keys.length; i += 1) {
+					const request = keys[i];
+					console.log('sw ' + call_id + ' as key request=', request);
+					const item = { };
+					let request_url = request.url;
+					console.log('sw ' + call_id + ' request_url=', request_url);							
+					const parts = request_url.split('/');
+					item.title = parts.pop(); // use filename from upload as title
+					parts.push(namespace); // insert into url
+					parts.push(item.title); // put back
+					item.url = parts.join('/');
+					console.log('sw ' + call_id + ' completed item=', item);							
+					items.push(item);
+				}
+				console.log('sw ' + call_id + ' completed items=', items);												
+				const container = { };
+				container.items = items;
+				console.log('sw ' + call_id + ' completed container=', container);
+				response_init.headers = new Headers({ });							
+				if ('json' == extension) {
+					console.log('sw ' + call_id + ' json');
+					response_init.headers['Content-Type'] = 'application/json';
+					body = JSON.stringify(container);
+					console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
+				} else if ('html' == extension) {
+					console.log('sw ' + call_id + ' html');			
+					response_init.headers['Content-Type'] = 'text/html';
+					response = new Response(null, response_init);
+					//console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);
+				}
+				response_init.headers['Cache-Control'] = 'max-age=0'; // 31536000 XXXXXXXXX
+				response_init.headers['Content-Length'] = body.length;
+				const response = new Response(body, response_init);				
+				console.log('sw ' + call_id + ' response=', response);
+				return response;							
+			} // end special case index.*
+
+			const response = await cache.match(key);
 			if (response) {
-				console.log('sw ' + call_id + ' using e.preloadResponse=', e.preloadResponse);											
+				console.log('sw ' + call_id + ' cache match found, response=', response);						
+				if ('head' == method) {
+					response_init.status = '200';
+					response_init.statusText = 'OK';
+					response = new Response(null, response_init);				
+					console.log('sw ' + call_id + ' head response=', response);						
+				} else if ('get' == method) {
+					console.log('sw ' + call_id + ' get');							
+					const inline = (function() { 
+						let inline = true;
+						if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
+							inline = false;
+						}
+						return inline;
+					} ) ();							
+					if (inline) {
+						response.headers.set('Content-Disposition', 'inline');
+					}
+				}
 			} else {
-				response = new Response(null, response_init);
-				console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);				
-			} 
-		}
-		//e.waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
-		//The service worker navigation preload request was cancelled before 'preloadResponse' settled. If you intend to use 'preloadResponse', use waitUntil() or respondWith() to wait for the promise to settle.
-		// Failed - No file
-		return response;					
+				//https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/PreloadResponse
+				response = await e.preloadResponse; // IF KEPT, SHOULD head/get BE DIFFERENTIATED HERE IN 'ELSE'?
+				if (response) {
+					console.log('sw ' + call_id + ' using e.preloadResponse=', e.preloadResponse);											
+				} else {
+					response = new Response(null, response_init);
+					console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);				
+				} 
+			}
+			//e.waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
+			//The service worker navigation preload request was cancelled before 'preloadResponse' settled. If you intend to use 'preloadResponse', use waitUntil() or respondWith() to wait for the promise to settle.
+			// Failed - No file
+			return response;					
 		} // ^ head or get
 	
-		if (method == 'post') {
+		if ('post' == method) {
 			console.log('sw ' + call_id + ' post');
 			
 			const formdata = await e.request.formData();

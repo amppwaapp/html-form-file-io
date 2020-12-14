@@ -9,12 +9,14 @@ self.addEventListener('fetch', function(e) {
 	const request = e.request;	
 	const url = new URL(request.url); 
 	const pathname = url.pathname;	
-	console.log('sw ' + call_id + ' ' + timestamp + ' pathname=' + pathname);
 
 	const namespace = 'datastore';
-	if (!pathname.startsWith('/html-form-file-io/' + namespace) ) {
-		console.log('sw ' + call_id + ' NOT FOR ME');		
-		return; // let AMP-SW's (or Workbox's, etc.) fetch event listener handle this instead
+	if (pathname.startsWith('/html-form-file-io/' + namespace) ) {
+		console.log('sw ' + call_id + ' ' + timestamp + ' pathname=' + pathname);	
+	} else {
+		console.debug('sw ' + call_id + ' ' + timestamp + ' pathname=' + pathname);		
+		console.debug('sw ' + call_id + ' NOT FOR ME');
+		return; // so rely on stock fetch event listener -- AMP-SW or Workbox, etc.
 	}
 
 	const method = request.method;	
@@ -72,7 +74,7 @@ self.addEventListener('fetch', function(e) {
 				response_init.statusText = 'OK';
 				let body = null;					
 				if ('HEAD' === method) {
-					console.log('sw ' + call_id + ' head');							
+					console.log('sw ' + call_id + ' HEAD');							
 					const response = new Response(null, response_init);				
 					console.log('sw ' + call_id + ' response=', response);
 					return response;
@@ -125,8 +127,8 @@ self.addEventListener('fetch', function(e) {
 				if ('HEAD' == method) {
 					response_init.status = '200';
 					response_init.statusText = 'OK';
-					response = new Response(null, response_init);				
-					console.log('sw ' + call_id + ' head response=', response);						
+					response = new Response(null, response_init);	
+					console.log('sw ' + call_id + ' HEAD response=', response);						
 				} else if ('GET' == method) {
 					console.log('sw ' + call_id + ' GET');							
 					const inline = (function() { 

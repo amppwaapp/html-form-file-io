@@ -7,7 +7,7 @@ self.addEventListener('fetch', function(e) {
 	const date = new Date( Date.now() );
 	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 	const request = e.request;	
-	const url = new URL(request);
+	const url = new URL(request); 
 	const pathname = url.pathname;	
 	const method = request.method;
 	console.log('sw ' + call_id + ' ' + timestamp + ' pathname=' + pathname);

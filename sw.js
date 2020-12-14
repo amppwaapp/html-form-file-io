@@ -5,15 +5,14 @@ let call_id = 0
 self.addEventListener('fetch', function(e) { 
 	call_id += 1;
 	const date = new Date( Date.now() );
-	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds(); 
-	console.log('sw ' + call_id + ' ' + timestamp);
-	console.log('sw ' + call_id + ' e=', e);	
-	
-	console.log('sw ' + call_id + ' e.request=', e.request);
+	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 	const url = new URL(e.request.url);
+	const pathname = url.pathname;	
+	console.log('sw ' + call_id + ' ' + timestamp + ' pathname=' + pathname);
+	console.log('sw ' + call_id + ' e=', e);	
+	console.log('sw ' + call_id + ' e.request=', e.request);
 	console.log('sw ' + call_id + ' url=e.request.url=', url);
-	const pathname = url.pathname;
-	console.log('sw ' + call_id + ' pathname=' + pathname);	
+
 	const namespace = 'datastore';
 	if (!pathname.startsWith('/html-form-file-io/' + namespace) ) {
 		console.log('sw ' + call_id + ' NOT FOR ME');		
@@ -46,14 +45,6 @@ self.addEventListener('fetch', function(e) {
 				return response;
 			}
 			
-			const inline = (function() { 
-				let inline = true;
-				if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
-					inline = false;
-				}
-				return inline;
-			} ) ();
-
 			const response = caches.open(namespace).then(function(cache) { // tried to have this async to use await, didn't pass defined cache
 				console.log('sw ' + call_id + ' (as passed in) cache=', cache);
 				//cache = await cache
@@ -117,13 +108,19 @@ self.addEventListener('fetch', function(e) {
 						} );
 					}
 				} // end special case index.json
-				
-				//console.log('sw ' + call_id + ' TRY TO GET e.request=', e.request);
+					
 				const response = cache.match(key).then(async function(response) {
 					if (response) {
 						console.log('sw ' + call_id + ' cache match found, response=', response);						
 						if (e.request.method == 'GET') {
-							console.log('sw ' + call_id + ' GET');
+							console.log('sw ' + call_id + ' GET');							
+							const inline = (function() { 
+								let inline = true;
+								if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
+									inline = false;
+								}
+								return inline;
+							} ) ();							
 							if (inline) {
 								response.headers.set('Content-Disposition', 'inline');
 							}

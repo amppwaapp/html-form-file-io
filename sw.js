@@ -8,10 +8,17 @@ self.addEventListener('fetch', function(e) {
 	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
 	const url = new URL(e.request.url);
 	const pathname = url.pathname;	
+	const method = url.method;
 	console.log('sw ' + call_id + ' ' + timestamp + ' pathname=' + pathname);
 	console.log('sw ' + call_id + ' e=', e);	
 	console.log('sw ' + call_id + ' e.request=', e.request);
 	console.log('sw ' + call_id + ' url=e.request.url=', url);
+	console.log('sw ' + call_id + ' url=e.request.method)=', method);	
+	
+	if ( ! ['head', 'get', 'post'].includes(method) ) {
+		console.log('sw ' + call_id + ' NOT FOR ME');		
+		return; // let AMP-SW's fetch event listener handle this instead	
+	}
 
 	const namespace = 'datastore';
 	if (!pathname.startsWith('/html-form-file-io/' + namespace) ) {
@@ -26,132 +33,133 @@ self.addEventListener('fetch', function(e) {
 			response_init.status = '400';
 			response_init.statusText = 'Bad Request';
 
-		if (e.request.method == 'HEAD' || e.request.method == 'GET') { // OTHER?
-			console.log('sw ' + call_id + ' HEAD/GET');
-			console.log('sw ' + call_id + ' caches=', caches);	
+		const cache = await caches.open(namespace);
+		console.log('sw ' + call_id + ' settled cache=', cache);				
+		if (!cache) {
+			const response = new Response(null, response_init); 
+			console.log('sw ' + call_id + ' no cache, response=', response);				
+			return response;
+		}
 			
-			const key = (function() {
-				const parts = pathname.split('/html-form-file-io/' + namespace + '/');
-				if (parts.length === 2) {
-					return parts[1];
-				} else {
-					return '';					
-				}
-			}());
-			console.log('sw ' + call_id + ' key=', key);			
-			if (!key) {
-				const response = new Response(null, response_init); 
-				console.log('sw ' + call_id + ' response=', response);				
+		const key = (function() {
+			const parts = pathname.split('/html-form-file-io/' + namespace + '/');
+			if (parts.length === 2) {
+				return parts[1];
+			} else {
+				return '';					
+			}
+		}());
+		console.log('sw ' + call_id + ' key=', key);			
+		if (!key) {
+			const response = new Response(null, response_init); 
+			console.log('sw ' + call_id + ' response=', response);				
+			return response;
+		}
+		
+		const [base, extension] = (function(key) {
+			let base = key;
+			let extension = '';
+			const parts = key.split('.');
+			if (parts.length > 1) {
+				extension = parts.pop();
+				base = parts.join('.');
+			}
+			return [base, extension];
+		}(key));
+		console.log('sw ' + call_id + ' base=' + base);			
+		console.log('sw ' + call_id + ' extension=' + extension);			
+		
+		if ( 'index' === base  && ['json','html'].includes(extension) ) {
+			response_init.status = '200';
+			response_init.statusText = 'OK';
+			let body = null;					
+			if ('head' === method) {
+				console.log('sw ' + call_id + ' head');							
+				const response = new Response(null, response_init);				
+				console.log('sw ' + call_id + ' response=', response);
 				return response;
 			}
-			
-			const response = caches.open(namespace).then(function(cache) { // tried to have this async to use await, didn't pass defined cache
-				console.log('sw ' + call_id + ' (as passed in) cache=', cache);
-				//cache = await cache
-				//console.log('sw ' + call_id + ' (settled if needed) cache=', cache);				
-				if (!cache) {
-					const response = new Response(null, response_init); 
-					console.log('sw ' + call_id + ' no cache, response=', response);				
-					return response;
+			console.log('sw ' + call_id + ' get');
+			const keys = await cache.keys();
+			console.log('sw ' + call_id + ' settled keys=', keys);
+			console.log('sw ' + call_id + ' keys.length=', keys.length);	
+			const items = [ ];
+			for (let i = 0; i < keys.length; i += 1) {
+				const request = keys[i];
+				console.log('sw ' + call_id + ' as key request=', request);
+				const item = { };
+				let request_url = request.url;
+				console.log('sw ' + call_id + ' request_url=', request_url);							
+				const parts = request_url.split('/');
+				item.title = parts.pop(); // use filename from upload as title
+				parts.push(namespace); // insert into url
+				parts.push(item.title); // put back
+				item.url = parts.join('/');
+				console.log('sw ' + call_id + ' completed item=', item);							
+				items.push(item);
+			}
+			console.log('sw ' + call_id + ' completed items=', items);												
+			const container = { };
+			container.items = items;
+			console.log('sw ' + call_id + ' completed container=', container);
+			response_init.headers = new Headers({ });							
+			if ('json' == extension) {
+				console.log('sw ' + call_id + ' json');
+				response_init.headers['Content-Type'] = 'application/json';
+				body = JSON.stringify(container);
+				console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
+			} else if ('html' == extension) {
+				console.log('sw ' + call_id + ' html');			
+				response_init.headers['Content-Type'] = 'text/html';
+				response = new Response(null, response_init);
+				//console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);
+			}
+			response_init.headers['Cache-Control'] = 'max-age=0'; // 31536000 XXXXXXXXX
+			response_init.headers['Content-Length'] = body.length;
+			const response = new Response(body, response_init);				
+			console.log('sw ' + call_id + ' response=', response);
+			return response;							
+		} // end special case index.*
+							
+		const response = await cache.match(key);
+		if (response) {
+			console.log('sw ' + call_id + ' cache match found, response=', response);						
+			if ('head' == method) {
+				response_init.status = '200';
+				response_init.statusText = 'OK';
+				response = new Response(null, response_init);				
+				console.log('sw ' + call_id + ' head response=', response);						
+			} else if ('get' == method) {
+				console.log('sw ' + call_id + ' get');							
+				const inline = (function() { 
+					let inline = true;
+					if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
+						inline = false;
+					}
+					return inline;
+				} ) ();							
+				if (inline) {
+					response.headers.set('Content-Disposition', 'inline');
 				}
-				if (key === 'index.json' || key === 'index.html') {
-					response_init.status = '200';
-					response_init.statusText = 'OK';
-					let body = null;					
-					if (e.request.method == 'HEAD') {
-						console.log('sw ' + call_id + ' HEAD');							
-						const response = new Response(null, response_init);				
-						console.log('sw ' + call_id + ' response=', response);
-						return response;
-					} else if (e.request.method == 'GET') {
-						console.log('sw ' + call_id + ' GET');
-						return cache.keys().then(function(keys) {
-							console.log('sw ' + call_id + ' settled keys=', keys);
-							console.log('sw ' + call_id + ' keys.length=', keys.length);	
-							const items = [ ];
-							for (let i = 0; i < keys.length; i += 1) {
-								const request = keys[i];
-								console.log('sw ' + call_id + ' as key request=', request);
-								const item = { };
-								let request_url = request.url;
-								console.log('sw ' + call_id + ' request_url=', request_url);							
-								const parts = request_url.split('/');
-								item.title = parts.pop(); // use filename from upload as title
-								parts.push(namespace); // insert into url
-								parts.push(item.title); // put back
-								item.url = parts.join('/');
-								console.log('sw ' + call_id + ' completed item=', item);							
-								items.push(item);
-							}
-							console.log('sw ' + call_id + ' completed items=', items);												
-							const container = { };
-							container.items = items;
-							console.log('sw ' + call_id + ' completed container=', container);
-							response_init.headers = new Headers({ });							
-							if (key === 'index.json') {
-								console.log('sw ' + call_id + ' json');
-								response_init.headers['Content-Type'] = 'application/json';
-								body = JSON.stringify(container);
-								console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
-		
-							} else if (key === 'index.html') {
-								console.log('sw ' + call_id + ' html');			
-								response_init.headers['Content-Type'] = 'text/html';
-								response = new Response(null, response_init);
-								//console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);
-							}
-							response_init.headers['Cache-Control'] = 'max-age=0'; // 31536000 XXXXXXXXX
-							response_init.headers['Content-Length'] = body.length;
-							const response = new Response(body, response_init);				
-							console.log('sw ' + call_id + ' response=', response);
-							return response;							
-						} );
-					}
-				} // end special case index.json
-					
-				const response = cache.match(key).then(async function(response) {
-					if (response) {
-						console.log('sw ' + call_id + ' cache match found, response=', response);						
-						if (e.request.method == 'GET') {
-							console.log('sw ' + call_id + ' GET');							
-							const inline = (function() { 
-								let inline = true;
-								if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
-									inline = false;
-								}
-								return inline;
-							} ) ();							
-							if (inline) {
-								response.headers.set('Content-Disposition', 'inline');
-							}
-						} else if (e.request.method == 'HEAD') {
-							response_init.status = '200';
-							response_init.statusText = 'OK';
-							response = new Response(null, response_init);				
-							console.log('sw ' + call_id + ' HEAD response=', response);						
-						}
-					} else {
-						//https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/PreloadResponse
-						response = await e.preloadResponse; // IF KEPT, SHOULD HEAD/GET BE DIFFERENTIATED HERE IN 'ELSE'?
-						if (response) {
-							console.log('sw ' + call_id + ' using e.preloadResponse=', e.preloadResponse);											
-						} else {
-							response = new Response(null, response_init);
-							console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);				
-						} 
-					}
-					//e.waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
-					//The service worker navigation preload request was cancelled before 'preloadResponse' settled. If you intend to use 'preloadResponse', use waitUntil() or respondWith() to wait for the promise to settle.
-					// Failed - No file
-					return response;					
-				} () );
-				return response;
-			} );
-			return response;
-		} // ^ HEAD or GET
+			}
+		} else {
+			//https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/PreloadResponse
+			response = await e.preloadResponse; // IF KEPT, SHOULD head/get BE DIFFERENTIATED HERE IN 'ELSE'?
+			if (response) {
+				console.log('sw ' + call_id + ' using e.preloadResponse=', e.preloadResponse);											
+			} else {
+				response = new Response(null, response_init);
+				console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);				
+			} 
+		}
+		//e.waitUntil (e.preloadResponse); // combatting download woes on ctrl-click link w/o download attr:
+		//The service worker navigation preload request was cancelled before 'preloadResponse' settled. If you intend to use 'preloadResponse', use waitUntil() or respondWith() to wait for the promise to settle.
+		// Failed - No file
+		return response;					
+		} // ^ head or get
 	
-		if (e.request.method == 'POST') {
-			console.log('sw ' + call_id + ' POST');
+		if (method == 'post') {
+			console.log('sw ' + call_id + ' post');
 			
 			const formdata = await e.request.formData();
 			console.log('sw ' + call_id + ' formdata=', formdata);
@@ -199,22 +207,20 @@ self.addEventListener('fetch', function(e) {
 				//console.log('sw ' + call_id + ' text=' + text);
 				//0-length file is allowed 
 
-				caches.open(namespace).then(function(cache) {
-					const cached_response_init = {  };
-						cached_response_init.status = '200';
-						cached_response_init.statusText = 'OK';
-						cached_response_init.headers = new Headers({
-							'Cache-Control': 'max-age=0', // 31536000 
-							'Content-Disposition': 'attachment; filename="' + filename + '"', // unfortunately, user won't be able to override this filename							
-							'Content-Length': text.length,
-							'Content-Type': 'text/plain'							
-						});					
-					const response = new Response(text, cached_response_init);
-					cache.put(filename, response).then(function() {
-						console.log('sw ' + call_id + ' cache put successful, under key=' + filename);
-					});
-				} )				
-
+//caches.open(namespace).then(function(cache) {
+				const cached_response_init = {  };
+					cached_response_init.status = '200';
+					cached_response_init.statusText = 'OK';
+					cached_response_init.headers = new Headers({
+						'Cache-Control': 'max-age=0', // 31536000 
+						'Content-Disposition': 'attachment; filename="' + filename + '"', // unfortunately, user won't be able to override this filename							
+						'Content-Length': text.length,
+						'Content-Type': 'text/plain'							
+					});					
+				const response = new Response(text, cached_response_init);
+				cache.put(filename, response).then(function() {
+					console.log('sw ' + call_id + ' cache put successful, under key=' + filename);
+				});
 				successes += 1;
 			}
 
@@ -229,7 +235,7 @@ self.addEventListener('fetch', function(e) {
 			}
 			const response = new Response(JSON.stringify( { } ), response_init);								
 			return response;					
-		} // ^ POST
+		} // ^ post
 		
 	} () ); // ^ e.respondWith(async function() {		
 } ); // ^ fetch event listener
@@ -274,17 +280,3 @@ self.addEventListener('activate', function(e) {
 
 	clients.claim();
 } );
-
-/*
-addEventListener("fetch", function(e) {
-	e.respondWith(async function() { // Respond from the cache if we can
-		const cachedResponse = await caches.match(e.request);
-		if (cachedResponse) return cachedResponse;
-		// Else, use the preloaded response, if it's there
-		const response = await e.preloadResponse;
-		if (response) return response;
-		// Else try the network.
-		return fetch(e.request);
-	}());
-});
-*/

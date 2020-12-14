@@ -12,8 +12,8 @@ self.addEventListener('fetch', function(e) {
 	console.log('sw ' + call_id + ' ' + timestamp + ' pathname=' + pathname);
 	console.log('sw ' + call_id + ' e=', e);	
 	console.log('sw ' + call_id + ' e.request=', e.request);
-	console.log('sw ' + call_id + ' url=e.request.url=', url);
-	console.log('sw ' + call_id + ' url=e.request.method)=', method);	
+	console.log('sw ' + call_id + ' e.request.url=', url);
+	console.log('sw ' + call_id + ' e.request.url.method=' + method);	
 	
 	if ( ! ['head', 'get', 'post'].includes(method) ) {
 		console.log('sw ' + call_id + ' NOT FOR ME');		

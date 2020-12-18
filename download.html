@@ -122,12 +122,15 @@
         </div>
       </template>
   </amp-list-->
-  <-- src="https://amppwa.app/html-form-file-io/datastore/index.json" sw doesn't get to see -->
+  <-- src="https://amppwa.app/html-form-file-io/datastore/index.json" sw doesn't get to see, so 404 from actual server
+      src="amp-script:dataFunctions.getRemoteData"
+   -->
     
     <amp-script width="200" height="100" script="hello-world">
       <ul id='list'></ul>
     </amp-script>
     <script id="hello-world" type="text/plain" target="amp-script">
+      const list = document.querySelector('ul#list');                   
       const list = document.querySelector('ul#list');
       for (let i = 0; i < 3; i +=1) {
         const li = document.createElement('li');

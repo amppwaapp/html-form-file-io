@@ -114,8 +114,9 @@
       width="auto"
       height="100"
       layout="fixed-height"
-      src="https://amppwa.app/html-form-file-io/datastore/index.json"
-    ><!-- src="amp-script:dataFunctions.getRemoteData" -->
+      src="amp-script:dataFunctions.getRemoteData"              
+      <-- src="https://amppwa.app/html-form-file-io/datastore/index.json" sw doesn't get to see -->
+    >
       <template type="amp-mustache">
         <div class="url-entry">
           <a href="{{url}}">{{title}}</a>

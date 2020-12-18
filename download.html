@@ -97,7 +97,7 @@
       </template>
     </amp-list -->
     
-    <!-- amp-script id="dataFunctions" script="local-script"><br/></amp-script>
+    <amp-script id="dataFunctions" script="local-script"><br/></amp-script>
     <script id="local-script" type="text/plain" target="amp-script">
       function getRemoteData() {
         return fetch('https://amppwa.app/html-form-file-io/datastore/index.json')
@@ -105,7 +105,7 @@
           // .then(transformData)
       }
       exportFunction('getRemoteData', getRemoteData);
-    </script -->
+    </script>
     <!-- "exported-functions" is the <amp-script> id, and "getRemoteData" corresponds to the exported function. -->
     
     <amp-list
@@ -124,7 +124,7 @@
       </template>
   </amp-list>      
     
-    <!-- amp-script width="200" height="100" script="hello-world">
+    <amp-script width="200" height="100" script="hello-world">
       <ul id='list'></ul>
     </amp-script>
     <script id="hello-world" type="text/plain" target="amp-script">
@@ -134,7 +134,7 @@
         li.textContent = 'xxx';
         list.appendChild(li);
       }
-    </script -->    
+    </script>    
     
     <div class="hero">
         <amp-img layout="fill"

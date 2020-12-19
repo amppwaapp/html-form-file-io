@@ -4,16 +4,25 @@ importScripts('/html-form-file-io/external-scripts/mustache.js');
 const templates = { };
 
 (function () {
-  fetch('/html-form-file-io/index.mustache')
-    .then((response) => response.text())
-    .then((template) => {
-	  templates['index'] = Mustache.parse(template);
-    });
-  fetch('/html-form-file-io/download.mustache')
-    .then((response) => response.text())
-    .then((template) => {
-	  templates['download'] = Mustache.parse(template);
-    });	
+	const date = new Date( Date.now() );
+	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+	console.log('sw ' + timestamp + ' ' + call_id + ' e=', e);	
+	fetch('/html-form-file-io/index.mustache')
+		.then((response) => response.text())
+		.then((template) => {
+			console.log('sw ' + timestamp + ' ' + call_id + ' index template=', template);		
+			templates['index'] = Mustache.parse(template);
+			console.log('sw ' + timestamp + ' ' + call_id + ' templates['index']=',templates['index']);
+			console.log('sw ' + timestamp + ' ' + call_id + ' templates=',templates);				
+	});
+	fetch('/html-form-file-io/download.mustache')
+		.then((response) => response.text())
+		.then((template) => {
+			console.log('sw ' + timestamp + ' ' + call_id + ' download template=', template);		
+			templates['download'] = Mustache.parse(template);
+			console.log('sw ' + timestamp + ' ' + call_id + ' templates['download']=',templates['download']);
+			console.log('sw ' + timestamp + ' ' + call_id + ' templates=',templates);		
+	});	
 } () );
 
 //https://stackoverflow.com/questions/45257602/sharing-fetch-handler-logic-defined-across-multiple-service-workers

@@ -131,21 +131,21 @@ self.addEventListener('fetch', function(e) {
 				const container = { };
 				container.items = items;
 				console.log('sw ' + call_id + ' completed container=', container);
-				response_init.headers = new Headers({ });							
+				response_init.headers = new Headers( ); // { }							
 				if ('json' == extension) {
 					console.log('sw ' + call_id + ' .json');
-					response_init.headers['Content-Type'] = 'application/json';
+					response_init.headers.set('Content-Type','application/json');
 					body = JSON.stringify(container);
 					console.log('sw ' + call_id + ' body=JSON.stringify(container)=' + body);						
 				} else if ('html' == extension) {
 					console.log('sw ' + call_id + ' .html');			
-					response_init.headers['Content-Type'] = 'text/html';
+					response_init.headers.set('Content-Type','text/html');
 					const template = templates[base];
 					console.log('sw ' + call_id + ' for Mustache.render template=', template);						
 					body = Mustache.render(template, container);
 				}
-				response_init.headers['Cache-Control'] = 'max-age=0'; // 31536000 XXXXXXXXX
-				response_init.headers['Content-Length'] = body.length;
+				response_init.headers.set('Cache-Control', 'max-age=0'); // 31536000 XXXXXXXXX
+				response_init.headers.set('Content-Length', body.length);
 				const response = new Response(body, response_init);				
 				console.log('sw ' + call_id + ' response=', response);
 				console.log('sw ' + call_id + ' response_init.headers[Content-Type]=', response_init.headers['Content-Type']);				

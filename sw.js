@@ -1,6 +1,8 @@
 // https://github.com/janl/mustache.js/
 importScripts('/html-form-file-io/external-scripts/mustache.js');
 
+let call_id = 0;
+
 const templates = { };
 
 (function () {
@@ -26,8 +28,6 @@ const templates = { };
 } () );
 
 //https://stackoverflow.com/questions/45257602/sharing-fetch-handler-logic-defined-across-multiple-service-workers
-
-let call_id = 0
 
 self.addEventListener('fetch', function(e) { 
 	call_id += 1;

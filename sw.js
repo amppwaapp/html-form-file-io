@@ -12,7 +12,7 @@ const templates = { };
 		.then((template) => {
 			console.log('sw ' + timestamp + ' ' + call_id + ' index template=', template);		
 			templates['index'] = Mustache.parse(template);
-			console.log('sw ' + timestamp + ' ' + call_id + ' templates['index']=',templates['index']);
+			console.log('sw ' + timestamp + ' ' + call_id + ' templates["index"]=',templates["index"]);
 			console.log('sw ' + timestamp + ' ' + call_id + ' templates=',templates);				
 	});
 	fetch('/html-form-file-io/download.mustache')
@@ -20,7 +20,7 @@ const templates = { };
 		.then((template) => {
 			console.log('sw ' + timestamp + ' ' + call_id + ' download template=', template);		
 			templates['download'] = Mustache.parse(template);
-			console.log('sw ' + timestamp + ' ' + call_id + ' templates['download']=',templates['download']);
+			console.log('sw ' + timestamp + ' ' + call_id + ' templates["download"]=',templates["download"]);
 			console.log('sw ' + timestamp + ' ' + call_id + ' templates=',templates);		
 	});	
 } () );

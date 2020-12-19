@@ -131,6 +131,7 @@ self.addEventListener('fetch', function(e) {
 				} else if ('html' == extension) {
 					console.log('sw ' + call_id + ' .html');			
 					response_init.headers['Content-Type'] = 'text/html';
+					console.log('sw ' + call_id + ' for Mustache.render template=', template);					
 					const template = templates[base];
 					body = Mustache.render(template, container);
 					response = new Response(body, response_init);

@@ -1,3 +1,21 @@
+// https://github.com/janl/mustache.js/
+importScripts('/html-form-file-io/external-scripts/mustache.js');
+
+const templates = { };
+
+(function () {
+  fetch('/html-form-file-io/index.mustache')
+    .then((response) => response.text())
+    .then((template) => {
+	  templates['index'] = Mustache.parse(template);
+    });
+  fetch('/html-form-file-io/download.mustache')
+    .then((response) => response.text())
+    .then((template) => {
+	  templates['download'] = Mustache.parse(template);
+    });	
+} () );
+
 //https://stackoverflow.com/questions/45257602/sharing-fetch-handler-logic-defined-across-multiple-service-workers
 
 let call_id = 0
@@ -55,7 +73,7 @@ self.addEventListener('fetch', function(e) {
 				console.log('sw ' + call_id + ' response=', response);				
 				return response;
 			}
-
+			
 			const [base, extension] = (function(key) {
 				let base = key;
 				let extension = '';
@@ -69,7 +87,9 @@ self.addEventListener('fetch', function(e) {
 			console.log('sw ' + call_id + ' base=' + base);			
 			console.log('sw ' + call_id + ' extension=' + extension);			
 
-			if ( 'index' === base  && ['json','html'].includes(extension) ) {
+			if ('download.html' === key
+			|| ( 'index' === base  && ['json','html'].includes(extension) )
+			   ) {
 				response_init.status = '200';
 				response_init.statusText = 'OK';
 				let body = null;					
@@ -111,7 +131,9 @@ self.addEventListener('fetch', function(e) {
 				} else if ('html' == extension) {
 					console.log('sw ' + call_id + ' .html');			
 					response_init.headers['Content-Type'] = 'text/html';
-					response = new Response(null, response_init); // [ ] COMPLETE THE BODY FOR THIS.  TEMPLATE?
+					const template = templates[base];
+					body = Mustache.render(template, container);
+					response = new Response(body, response_init);
 					//console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);
 				}
 				response_init.headers['Cache-Control'] = 'max-age=0'; // 31536000 XXXXXXXXX

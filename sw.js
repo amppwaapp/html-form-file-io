@@ -8,7 +8,7 @@ const templates = { };
 (function () {
 	const date = new Date( Date.now() );
 	const timestamp = '' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-	console.log('sw ' + timestamp + ' ' + call_id + ' e=', e);	
+	console.log('sw ' + timestamp + ' ' + call_id + ' prefetch mustache templates');	
 	fetch('/html-form-file-io/index.mustache')
 		.then((response) => response.text())
 		.then((template) => {

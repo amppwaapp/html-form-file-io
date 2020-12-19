@@ -17,6 +17,7 @@ const templates = { };
 			console.log('sw ' + timestamp + ' ' + call_id + ' templates["index"]=',templates["index"]);
 			console.log('sw ' + timestamp + ' ' + call_id + ' templates=',templates);				
 	});
+	/*
 	fetch('/html-form-file-io/download.mustache')
 		.then((response) => response.text())
 		.then((template) => {
@@ -24,7 +25,8 @@ const templates = { };
 			templates['download'] = template; //Mustache.parse(template);
 			console.log('sw ' + timestamp + ' ' + call_id + ' templates["download"]=',templates["download"]);
 			console.log('sw ' + timestamp + ' ' + call_id + ' templates=',templates);		
-	});	
+	});
+	*/
 } () );
 
 //https://stackoverflow.com/questions/45257602/sharing-fetch-handler-logic-defined-across-multiple-service-workers
@@ -96,9 +98,7 @@ self.addEventListener('fetch', function(e) {
 			console.log('sw ' + call_id + ' base=' + base);			
 			console.log('sw ' + call_id + ' extension=' + extension);			
 
-			if ('download.html' === key
-			|| ( 'index' === base  && ['json','html'].includes(extension) )
-			   ) {
+			if ( 'index' === base  && ['json','html'].includes(extension) ) {			   
 				response_init.status = '200';
 				response_init.statusText = 'OK';
 				let body = null;					

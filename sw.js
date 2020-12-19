@@ -143,8 +143,6 @@ self.addEventListener('fetch', function(e) {
 					const template = templates[base];
 					console.log('sw ' + call_id + ' for Mustache.render template=', template);						
 					body = Mustache.render(template, container);
-					response = new Response(body, response_init);
-					//console.log('sw ' + call_id + ' no match or preloadResponse, response=', response);
 				}
 				response_init.headers['Cache-Control'] = 'max-age=0'; // 31536000 XXXXXXXXX
 				response_init.headers['Content-Length'] = body.length;

@@ -148,6 +148,7 @@ self.addEventListener('fetch', function(e) {
 				response_init.headers['Content-Length'] = body.length;
 				const response = new Response(body, response_init);				
 				console.log('sw ' + call_id + ' response=', response);
+				console.log('sw ' + call_id + ' response_init.headers[Content-Type]=', response_init.headers['Content-Type']);				
 				return response;							
 			} // end special case index.*
 

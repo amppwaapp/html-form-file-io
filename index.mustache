@@ -74,7 +74,7 @@
         }        
         th, td {
             padding: 15px;
-            text-align: left;
+            text-align: center;
         }
     </style>
     <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
@@ -163,17 +163,6 @@
                 <h2>Stage One</h2>
 <ul>
 {{#items}}
-<li><a href='{{url}}'>{{title}}</a><a href='{{url}}' download>{{title}} download</a><a href='{{url}}' download=''>{{title}} download=''</a><a href='{{url}}' download='a.txt'>{{title}} download</a><a href='{{url}}' download='b.txt'>{{title}} download=a.txt</a></li>
-<li><a href='{{url}}?disposition=attachment'>{{title}}</a><a href='{{url}}?disposition=attachment' download>{{title}} download</a><a href='{{url}}?disposition=attachment' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment' download='b.txt'>{{title}} download=a.txt</a></li>
-<li><a href='{{url}}?disposition=attachment; filename='>{{title}}</a><a href='{{url}}?disposition=attachment; filename=' download>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment; filename=' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>{{title}} download=a.txt</a></li>
-<li><a href='{{url}}?disposition=attachment; filename=a.txt'>{{title}}</a><a href='{{url}}?disposition=attachment; filename=a.txt' download>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment; filename=a.txt' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>{{title}} download=a.txt</a></li>
-<li><a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a><a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment; filename=b.txt' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=b.txt' download='b.txt'>{{title}} download=a.txt</a></li>
-{{/items}}
-</ul>   
-
-
-            <h2 style='white-space:break-spaces;text-align:center;'>Content-disposition&nbsp;header<br/>×<br/>Anchor&nbsp;download&nbsp;attribute</h2>
-{{#items}}
 <table>
 <tr>
 <th rowspan='2' colspan='2'></th>
@@ -189,43 +178,43 @@
 <tr>
 <th rowspan='5' class='top' style='transform:rotate(-90deg); white-space:no-wrap;'>content&#8209;disposition&nbsp;header</th>
 <th>none</th>
-<td><a href='{{url}}'>&bullet;</a></td>
-<td><a href='{{url}}' download>{{title}}</a></td>
-<td><a href='{{url}}' download=''>{{title}}</a></td>
-<td><a href='{{url}}' download='a.txt'>{{title}}</a></td>
-<td><a href='{{url}}' download='b.txt'>{{title}}</a></td>
+<td><a href='{{url}}'>&target;</a></td>
+<td><a href='{{url}}' download>&target;</a></td>
+<td><a href='{{url}}' download=''>&target;</a></td>
+<td><a href='{{url}}' download='a.txt'>&target;</a></td>
+<td><a href='{{url}}' download='b.txt'>&target;</a></td>
 </tr>
 <tr>
 <th>attachment</th>
-<td><a href='{{url}}?disposition=attachment'>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment' download>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment' download=''>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment' download='a.txt'>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment' download='b.txt'>{{title}}</a></td>
+<td><a href='{{url}}?disposition=attachment'>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment' download>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment' download=''>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment' download='a.txt'>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment' download='b.txt'>&target;</a></td>
 </tr>
 <tr>
 <th>attachment; filename=""</th>
-<td><a href='{{url}}?disposition=attachment; filename='>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=' download>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=' download=''>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=' download='a.txt'>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>{{title}}</a></td>
+<td><a href='{{url}}?disposition=attachment; filename='>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=' download>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=' download=''>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=' download='a.txt'>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>&target;</a></td>
 </tr>
 <tr>
 <th>attachment; filename="a.txt"</th>
-<td><a href='{{url}}?disposition=attachment; filename=a.txt'>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=a.txt' download>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=a.txt' download='a.txt'>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>{{title}}</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt'>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt' download>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt' download='a.txt'>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>&target;</a></td>
 </tr>
 <tr>
 <th>attachment; filename="b.txt"</th>
-<td><a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=b.txt' download='a.txt'>{{title}}</a></td>
-<td><a href='{{url}}?disposition=attachment; filename=b.txt' download='b.txt'>{{title}}</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt'>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt' download=>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt' download='a.txt'>&target;</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt' download='b.txt'>&target;</a></td>
 </tr>
 </table>
 {{/items}}

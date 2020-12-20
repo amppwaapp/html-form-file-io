@@ -161,16 +161,21 @@ self.addEventListener('fetch', function(e) {
 					response = new Response(null, response_init);	
 					console.log('sw ' + call_id + ' HEAD response=', response);						
 				} else if ('GET' == method) {
-					console.log('sw ' + call_id + ' GET');							
-					const inline = (function() { 
-						let inline = true;
-						if (url.searchParams.has('disposition') && url.searchParams.get('disposition') == 'download') {
-							inline = false;
+					console.log('sw ' + call_id + ' GET');	
+					let disposition = 'inline';
+					let filename; 
+					if ( url.searchParams.has('disposition') ) {
+						disposition = url.searchParams.get('disposition');
+						if ( url.searchParams.has('filename') ) {							
+							filename = url.searchParams.get('filename');
 						}
-						return inline;
-					} ) ();							
-					if (inline) {
-						response.headers.set('Content-Disposition', 'inline');
+					}				
+					if (disposition) {
+						let value = disposition;
+						if (filename) {
+							value += '; filename=' + filename;
+						}
+						response.headers.set('Content-Disposition', value);
 					}
 				}
 			} else {

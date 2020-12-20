@@ -161,6 +161,9 @@
 <ul>
 {{#items}}
 <li><a href='{{url}}'>{{title}}</a><a href='{{url}}' download=''>{{title}} download</a><a href='{{url}}' download='a.txt'>{{title}} download</a><a href='{{url}}' download='b.txt'>{{title}} download=a.txt</a></li>
+<li><a href='{{url}}?a=x''>{{title}}</a><a href='{{url}}?a=x' download=''>{{title}} download</a><a href='{{url}}?a=x' download='a.txt'>{{title}} download</a><a href='{{url}}?a=x' download='b.txt'>{{title}} download=a.txt</a></li>
+<li><a href='{{url}}?a=a.txt'>{{title}}</a><a href='{{url}}?a=a.txt' download=''>{{title}} download</a><a href='{{url}}?a=a.txt' download='a.txt'>{{title}} download</a><a href='{{url}}?a=a.txt' download='b.txt'>{{title}} download=a.txt</a></li>
+<li><a href='{{url}}?a=b.txt'>{{title}}</a><a href='{{url}}?a=b.txt' download=''>{{title}} download</a><a href='{{url}}?a=b.txt' download='a.txt'>{{title}} download</a><a href='{{url}}?a=b.txt' download='b.txt'>{{title}} download=a.txt</a></li>
 {{/items}}
 </ul>                    
             <h2>Stage Two</h2>

@@ -172,7 +172,7 @@
 </ul>   
 
 
-            <h2 style='white-space:break-spaces;text-align:center;'>Content-disposition&nbsp;header × Anchor&nbsp;download&nbsp;attribute</h2>
+            <h2 style='white-space:break-spaces;text-align:center;'>Content-disposition&nbsp;header<br/>×<br/>Anchor&nbsp;download&nbsp;attribute</h2>
 {{#items}}
 <table>
 <tr>
@@ -182,12 +182,12 @@
 <tr>
 <th class='top'>none</th>
 <th class='top'>download</th>
-<th class='top'>download=''</th>
-<th class='top'>download='a.txt'</th>
-<th class='top'>download='b.txt'</th>
+<th class='top'>download=""</th>
+<th class='top'>download="a.txt"</th>
+<th class='top'>download="b.txt"</th>
 </tr>
 <tr>
-<th rowspan='5' style='transform:rotate(-90deg); white-space:no-wrap;'>content-disposition&nbsp;header</th>
+<th rowspan='5' class='top' style='transform:rotate(-90deg); white-space:no-wrap;'>content-disposition&nbsp;header</th>
 <th>none</th>
 <td><a href='{{url}}'>{{title}}</a></td>
 <td><a href='{{url}}' download>{{title}}</a></td>
@@ -204,7 +204,7 @@
 <td><a href='{{url}}?disposition=attachment' download='b.txt'>{{title}}</a></td>
 </tr>
 <tr>
-<th>attachment; filename=''</th>
+<th>attachment; filename=""</th>
 <td><a href='{{url}}?disposition=attachment; filename='>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=' download>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=' download=''>{{title}}</a></td>
@@ -212,7 +212,7 @@
 <td><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>{{title}}</a></td>
 </tr>
 <tr>
-<th>attachment; filename='a.txt'</th>
+<th>attachment; filename="a.txt"</th>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt'>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>{{title}}</a></td>
@@ -220,7 +220,7 @@
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>{{title}}</a></td>
 </tr>
 <tr>
-<th>attachment; filename='b.txt'</th>
+<th>attachment; filename="b.txt"</th>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}}</a></td>

@@ -164,39 +164,64 @@
 <li><a href='{{url}}?disposition=attachment'>{{title}}</a><a href='{{url}}?disposition=attachment' download>{{title}} download</a><a href='{{url}}?disposition=attachment' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment' download='b.txt'>{{title}} download=a.txt</a></li>
 <li><a href='{{url}}?disposition=attachment; filename='>{{title}}</a><a href='{{url}}?disposition=attachment; filename=' download>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment; filename=' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>{{title}} download=a.txt</a></li>
 <li><a href='{{url}}?disposition=attachment; filename=a.txt'>{{title}}</a><a href='{{url}}?disposition=attachment; filename=a.txt' download>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment; filename=a.txt' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>{{title}} download=a.txt</a></li>
-<li><a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a><a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment; filename=b.txt' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=b.txt' download='b.txt'>{{title}} download=a.txt</a></li>{{/items}}
-</ul>                    
+<li><a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a><a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}} download=''</a><a href='{{url}}?disposition=attachment; filename=b.txt' download='a.txt'>{{title}} download</a><a href='{{url}}?disposition=attachment; filename=b.txt' download='b.txt'>{{title}} download=a.txt</a></li>
+{{/items}}
+</ul>   
+
+
             <h2>Stage Two</h2>
-            <table>
-                    <tr>
-                    <th>Band</th>
-                    <th>Time</th>
-                    </tr>
-                    <tr>
-                    <td>Super AMP</td>
-                    <td>11:00</td>
-                    </tr>
-                    <tr>
-                        <td>New Tab for Cutie</td>
-                        <td>12:00</td>
-                    </tr>
-                    <tr>
-                        <td>The Scrolling Phones</td>
-                        <td>13:00</td>
-                    </tr>
-                    <tr>
-                        <td>V0.1</td>
-                        <td>14:00</td>
-                    </tr>
-                    <tr>
-                        <td>The Flying Carp</td>
-                        <td>15:00</td>
-                    </tr>
-                    <tr>
-                        <td>Compiley Cyrus</td>
-                        <td>16:00</td>
-                    </tr>
-                </table>           
+{{#items}}
+<table>
+<tr>
+<th></th>
+<th>no download attribute</th>
+<th>download attribute w/o value</th>
+<th>download attribute w/ 0-length value</th>
+<th>download=a.txt</th>
+<th>download=b.txt</th>
+</tr>
+<tr>
+<th>no content-disposition header</th>
+<td><a href='{{url}}'>{{title}}</a></td>
+<td><a href='{{url}}' download>{{title}} download</a></td>
+<td><a href='{{url}}' download=''>{{title}} download=''</a></td>
+<td><a href='{{url}}' download='a.txt'>{{title}} download</a></td>
+<td><a href='{{url}}' download='b.txt'>{{title}} download=a.txt</a></td>
+</tr>
+<tr>
+<th>content-disposition attachment no filename</th>
+<td><a href='{{url}}?disposition=attachment'>{{title}}</a></td>
+<td><a href='{{url}}?disposition=attachment' download>{{title}} download</a></td>
+<td><a href='{{url}}?disposition=attachment' download=''>{{title}} download=''</a></td>
+<td><a href='{{url}}?disposition=attachment' download='a.txt'>{{title}} download</a></td>
+<td><a href='{{url}}?disposition=attachment' download='b.txt'>{{title}} download=a.txt</a></td>
+</tr>
+<tr>
+<th>content-disposition attachment 0-length filename</th>
+<td><a href='{{url}}?disposition=attachment; filename='>{{title}}</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=' download>{{title}} download</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=' download=''>{{title}} download=''</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=' download='a.txt'>{{title}} download</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>{{title}} download=a.txt</a></td>
+</tr>
+<tr>
+<th>content-disposition attachment filename=a.txt</th>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt'>{{title}}</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt' download>{{title}} download</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>{{title}} download=''</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt' download='a.txt'>{{title}} download</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>{{title}} download=a.txt</a></td>
+</tr>
+<tr>
+<th>content-disposition attachment filename=b.txt</th>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}} download</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}} download=''</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt' download='a.txt'>{{title}} download</a></td>
+<td><a href='{{url}}?disposition=attachment; filename=b.txt' download='b.txt'>{{title}} download=a.txt</a></td>
+</tr>
+</table>
+{{/items}}
             </div>
         </div>     
     </div>

@@ -174,18 +174,18 @@
 <table>
 <tr>
 <th rowspan='2' colspan='2'></th>
-<th colspan='5'>download attribute</th>
+<th colspan='5' style='text-align: center;'>download attribute</th>
 </tr>
 <tr>
-<th style='text-align: center;'>no download attribute</th>
-<th>download attribute w/o value</th>
-<th>download attribute w/ 0-length value</th>
-<th>download=a.txt</th>
-<th>download=b.txt</th>
+<th>none</th>
+<th>download</th>
+<th>download=''</th>
+<th>download='a.txt'</th>
+<th>download='b.txt'</th>
 </tr>
 <tr>
-<th rowspan='5' style='transform: rotate(-90deg);'>content-disposition header</th>
-<th>no content-disposition header</th>
+<th rowspan='5' style='transform:rotate(-90deg); white-space:no-wrap;'>content-disposition header</th>
+<th>none</th>
 <td><a href='{{url}}'>{{title}}</a></td>
 <td><a href='{{url}}' download>{{title}}</a></td>
 <td><a href='{{url}}' download=''>{{title}}</a></td>
@@ -193,7 +193,7 @@
 <td><a href='{{url}}' download='b.txt'>{{title}}</a></td>
 </tr>
 <tr>
-<th>content-disposition attachment no filename</th>
+<th>attachment</th>
 <td><a href='{{url}}?disposition=attachment'>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment' download>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment' download=''>{{title}}</a></td>
@@ -201,7 +201,7 @@
 <td><a href='{{url}}?disposition=attachment' download='b.txt'>{{title}}</a></td>
 </tr>
 <tr>
-<th>content-disposition attachment 0-length filename</th>
+<th>attachment; filename=''</th>
 <td><a href='{{url}}?disposition=attachment; filename='>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=' download>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=' download=''>{{title}}</a></td>
@@ -209,7 +209,7 @@
 <td><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>{{title}}</a></td>
 </tr>
 <tr>
-<th>content-disposition attachment filename=a.txt</th>
+<th>attachment; filename='a.txt'</th>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt'>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>{{title}}</a></td>
@@ -217,7 +217,7 @@
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>{{title}}</a></td>
 </tr>
 <tr>
-<th>content-disposition attachment filename=b.txt</th>
+<th>attachment; filename='b.txt'</th>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}}</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}}</a></td>

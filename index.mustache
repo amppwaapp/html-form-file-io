@@ -69,6 +69,9 @@
             font-size: 2em;
             text-align: center;
         }
+        th.top {
+            text-align: center;
+        }        
         th, td {
             padding: 15px;
             text-align: left;
@@ -169,7 +172,7 @@
 </ul>   
 
 
-            <h2 style='white-space:break-spaces;'>Content-disposition header × Anchor download attribute</h2>
+            <h2 style='white-space:break-spaces;text-align:center;'>Content-disposition&nbsp;header × Anchor&nbsp;download&nbsp;attribute</h2>
 {{#items}}
 <table>
 <tr>
@@ -177,14 +180,14 @@
 <th colspan='5' style='text-align: center;'>download attribute</th>
 </tr>
 <tr>
-<th>none</th>
-<th>download</th>
-<th>download=''</th>
-<th>download='a.txt'</th>
-<th>download='b.txt'</th>
+<th class='top'>none</th>
+<th class='top'>download</th>
+<th class='top'>download=''</th>
+<th class='top'>download='a.txt'</th>
+<th class='top'>download='b.txt'</th>
 </tr>
 <tr>
-<th rowspan='5' style='transform:rotate(-90deg); white-space:no-wrap;'>content-disposition header</th>
+<th rowspan='5' style='transform:rotate(-90deg); white-space:no-wrap;'>content-disposition&nbsp;header</th>
 <th>none</th>
 <td><a href='{{url}}'>{{title}}</a></td>
 <td><a href='{{url}}' download>{{title}}</a></td>

@@ -88,8 +88,6 @@
     <title>Progressive Web AMP</title>
   </head>
   <body>
-    <a href='https://amppwa.app/html-form-file-io/datastore/timeline-urls.pl'>timeline-urls.pl</a>
-    <a href='https://amppwa.app/html-form-file-io/datastore/timeline-for-urls.txt'>timeline-for-urls.txt</a>
 
     <!-- amp-list
       width="auto"
@@ -160,22 +158,22 @@
         media="(max-width: 649px)"
         src="images/lyghtning-mobile.jpg"></amp-img>
         <div class="lineup">
-            <h1>Event Schedule</h1>
+            <h1>download comparisons</h1>
             <amp-img layout="intrinsic"
             height="70" 
             width="70"
             src="images/amplogo.png"></amp-img>
             <div class="center">
-                <h2>download comparisons</h2>
 <ul>
 {{#items}}
 <table>
-<caption>{{title}}</caption>
+<caption>file stored as {{title}}</caption>
 <tr>
-<th rowspan='2' colspan='2'></th>
+<th/>
 <th colspan='5' style='text-align: center;'>download attribute</th>
 </tr>
 <tr>
+<th class='side' style='white-space:no-wrap;'>content&#8209;disposition&nbsp;header</th>
 <th class='top'>none</th>
 <th class='top'>download</th>
 <th class='top'>download=""</th>
@@ -183,7 +181,7 @@
 <th class='top'>download="b.txt"</th>
 </tr>
 <tr>
-<th rowspan='5' class='top' style='transform:rotate(-90deg); white-space:no-wrap;'>content&#8209;disposition&nbsp;header</th>
+
 <th class='side'>none</th>
 <td><a href='{{url}}'>&target;</a></td>
 <td><a href='{{url}}' download>&target;</a></td>

@@ -74,6 +74,9 @@
         }
         th.top {
             text-align: center;
+        } 
+        th.side {
+            text-align: right;
         }        
         th, td {
             padding: 15px;
@@ -126,7 +129,7 @@
         </div>
       </template>
   </amp-list-->
-  <-- src="https://amppwa.app/html-form-file-io/datastore/index.json" sw doesn't get to see, so 404 from actual server
+  <!-- src="https://amppwa.app/html-form-file-io/datastore/index.json" sw doesn't get to see, so 404 from actual server
       src="amp-script:dataFunctions.getRemoteData"
    -->
     
@@ -166,8 +169,8 @@
                 <h2>download comparisons</h2>
 <ul>
 {{#items}}
-                <h3>{{title}}</h3>
 <table>
+<caption>{{title}}</caption>
 <tr>
 <th rowspan='2' colspan='2'></th>
 <th colspan='5' style='text-align: center;'>download attribute</th>
@@ -181,7 +184,7 @@
 </tr>
 <tr>
 <th rowspan='5' class='top' style='transform:rotate(-90deg); white-space:no-wrap;'>content&#8209;disposition&nbsp;header</th>
-<th>none</th>
+<th class='side'>none</th>
 <td><a href='{{url}}'>&target;</a></td>
 <td><a href='{{url}}' download>&target;</a></td>
 <td><a href='{{url}}' download=''>&target;</a></td>
@@ -189,7 +192,7 @@
 <td><a href='{{url}}' download='b.txt'>&target;</a></td>
 </tr>
 <tr>
-<th>attachment</th>
+<th class='side'>attachment</th>
 <td><a href='{{url}}?disposition=attachment'>&target;</a></td>
 <td><a href='{{url}}?disposition=attachment' download>&target;</a></td>
 <td><a href='{{url}}?disposition=attachment' download=''>&target;</a></td>
@@ -197,7 +200,7 @@
 <td><a href='{{url}}?disposition=attachment' download='b.txt'>&target;</a></td>
 </tr>
 <tr>
-<th>attachment; filename=""</th>
+<th class='side'>attachment; filename=""</th>
 <td><a href='{{url}}?disposition=attachment; filename='>&target;</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=' download>&target;</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=' download=''>&target;</a></td>
@@ -205,7 +208,7 @@
 <td><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>&target;</a></td>
 </tr>
 <tr>
-<th>attachment; filename="a.txt"</th>
+<th class='side'>attachment; filename="a.txt"</th>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt'>&target;</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download>&target;</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>&target;</a></td>
@@ -213,7 +216,7 @@
 <td><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>&target;</a></td>
 </tr>
 <tr>
-<th>attachment; filename="b.txt"</th>
+<th class='side'>attachment; filename="b.txt"</th>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt'>&target;</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt' download=>&target;</a></td>
 <td><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>&target;</a></td>

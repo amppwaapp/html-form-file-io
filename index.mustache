@@ -91,16 +91,17 @@
   <p>
 Try out a combination of interest in a browser of choice.  Try to
 <ul>
-<li>open in same or new window/tab (e.g., with alt+click), and then Save-Page-As</li>
-<li>some combinations will download immediately</li>
 <li>open context menu (e.g., with right-click or ctrl+click), and then Save-Link-As</li>
+<li>open in the same window/tab (with click) or in a new window/tab (with alt+click)</li>
+<li>some combinations will download immediately</li>
+<li>otherwise, you can then Save-Page-As</li>
 </ul>
 </p>
 <p>
 Some combinations in some browsers will be less usable, requiring subsequent user copy/move of local operating system files -- though awkward, this may be correct behavior by-the-spec;
 or be unusable or even fail.  I've seen these: 
 <ul>
-<li>no fetch through service worker, then failure to find resource at amppwa.app site</li>
+<li>fetch not tried through service worker, then failure to find resource at amppwa.app site</li>
 <li>no user choice of saved filename or directory location</li>
 <li>.html imposed as file extension on save</li>
 <li>needed additional step of opening a new tab or window to get desired result</li>
@@ -198,43 +199,43 @@ or be unusable or even fail.  I've seen these:
 </tr>
 <tr>
 <th class='side'>none</th>
-<td>{{#items}}<a href='{{url}}'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}' download>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}' download=''>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}' download='a.txt'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}' download='b.txt'>{{title}}</a>{{/items}}</td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}' download>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}' download=''>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}' download='a.txt'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}' download='b.txt'>{{title}}</a></li>{{/items}}</ul></td>
 </tr>
 <tr>
 <th class='side'>attachment</th>
-<td>{{#items}}<a href='{{url}}?disposition=attachment'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment' download>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment' download=''>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment' download='a.txt'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment' download='b.txt'>{{title}}</a>{{/items}}</td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment' download>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment' download=''>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment' download='a.txt'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment' download='b.txt'>{{title}}</a></li>{{/items}}</ul></td>
 </tr>
 <tr>
 <th class='side'>attachment; filename=""</th>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename='>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=' download>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=' download=''>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=' download='a.txt'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=' download='b.txt'>{{title}}</a>{{/items}}</td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename='>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=' download>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=' download=''>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=' download='a.txt'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=' download='b.txt'>{{title}}</a></li>{{/items}}</ul></td>
 </tr>
 <tr>
 <th class='side'>attachment; filename="a.txt"</th>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=a.txt'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=a.txt' download>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=a.txt' download=''>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=a.txt' download='a.txt'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>{{title}}</a>{{/items}}</td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=a.txt'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=a.txt' download>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=a.txt' download=''>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=a.txt' download='a.txt'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=a.txt' download='b.txt'>{{title}}</a></li>{{/items}}</ul></td>
 </tr>
 <tr>
 <th class='side'>attachment; filename="b.txt"</th>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=b.txt' download='a.txt'>{{title}}</a>{{/items}}</td>
-<td>{{#items}}<a href='{{url}}?disposition=attachment; filename=b.txt' download='b.txt'>{{title}}</a>{{/items}}</td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=b.txt'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=b.txt' download=>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=b.txt' download=''>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=b.txt' download='a.txt'>{{title}}</a></li>{{/items}}</ul></td>
+<td><ul list-style-type='none'>{{#items}}<li><a href='{{url}}?disposition=attachment; filename=b.txt' download='b.txt'>{{title}}</a></li>{{/items}}</ul></td>
 </tr>
 </table>
 </div>

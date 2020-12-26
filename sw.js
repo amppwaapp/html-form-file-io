@@ -152,7 +152,7 @@ self.addEventListener('fetch', function(e) {
 				return response;							
 			} // end special case index.*
 
-			const response = await cache.match(key);
+			let response = await cache.match(key);
 			if (response) {
 				console.log('sw ' + call_id + ' cache match found, response=', response);						
 				if ('HEAD' == method) {
